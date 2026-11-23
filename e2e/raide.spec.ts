@@ -25,11 +25,25 @@ async function expectNoPageOverflow(page: Page, tolerance = 2) {
               right: Math.round(node.getBoundingClientRect().right),
             }))
         : [];
-    return { viewport, content, offenders };
+    const containers =
+      content > viewport + 2
+        ? Array.from(
+            document.querySelectorAll(
+              'body, .main-shell, main, .timetable-panel, .timetable-lower, raide-train-table, .train-list, .chart-wrap',
+            ),
+          ).map((node) => ({
+            element: node.tagName.toLowerCase(),
+            className: String((node as HTMLElement).className ?? '').slice(0, 60),
+            clientWidth: node.clientWidth,
+            scrollWidth: node.scrollWidth,
+            right: Math.round(node.getBoundingClientRect().right),
+          }))
+        : [];
+    return { viewport, content, offenders, containers };
   });
   expect(
     extent.content,
-    `Vaakaylivuodon elementit: ${JSON.stringify(extent.offenders)}`,
+    `Vaakaylivuodon elementit: ${JSON.stringify(extent.offenders)}; säiliöt: ${JSON.stringify(extent.containers)}`,
   ).toBeLessThanOrEqual(extent.viewport + tolerance);
 }
 

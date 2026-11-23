@@ -2106,11 +2106,13 @@ input[type='range'] {
     gap: 8px;
   }
   .timetable-lower {
-    grid-template-columns: 1fr;
+    /* A wide train table must scroll within its own panel, not expand the page. */
+    grid-template-columns: minmax(0, 1fr);
   }
   .timetable-lower > raide-train-table,
   .timetable-lower > raide-train-detail {
     height: 360px;
+    min-width: 0;
   }
   .replay-controls .tiny {
     display: none;
