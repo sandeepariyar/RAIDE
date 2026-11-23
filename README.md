@@ -8,7 +8,7 @@
 
 **Suunnittelu ja toteutus / Designed & developed by Sandeep Pariyar**
 
-[**Avaa sovellus**](https://raide-railway-intelligence-2026.sandeep-pariyar.chatgpt.site) · [**Komponentit**](#rakenne) · [**Tietolähteet**](#aineistot-ja-tulkinta) · [**Laatu ja testaus**](#laatuvaatimukset)
+[**Avaa RAIDE · GitHub Pages**](https://sandeepariyar.github.io/RAIDE/) · [**Komponentit**](#rakenne) · [**Tietolähteet**](#aineistot-ja-tulkinta) · [**Laatu ja testaus**](#laatuvaatimukset)
 
 ![TypeScript](https://img.shields.io/badge/TypeScript-1C3040?style=flat-square&logo=typescript&logoColor=74DCC9)
 ![Lit](https://img.shields.io/badge/Lit_Web_Components-1C3040?style=flat-square&logo=lit&logoColor=74DCC9)
@@ -40,6 +40,14 @@ Suomenkielinen, valtakunnallinen junaliikenteen verkkosovellus ja uudelleenkäyt
 Itsenäinen portfolio-projekti. Sovellus ei ole Fintrafficin palvelu eikä liikenteenohjausjärjestelmä.
 
 **Tekijänoikeus:** © 2026 Sandeep Pariyar. Kaikki oikeudet pidätetään. RAIDE-lähdekoodi on julkisesti nähtävillä portfolio- ja arviointitarkoituksiin; siihen ei myönnetä yleistä käyttö-, muokkaus- tai jakelulisenssiä. GitHubin käyttöehdot ja sovellettavan lain poikkeukset ovat voimassa. Kolmansien osapuolten aineistot, kirjasimet ja ohjelmistoriippuvuudet säilyttävät omat lisenssinsä. [Lue tekijänoikeusilmoitus](COPYRIGHT.md).
+
+## Verkossa
+
+- **[RAIDE — GitHub Pages](https://sandeepariyar.github.io/RAIDE/)** · julkinen, selaimessa toimiva sovellus.
+- [Alkuperäinen portfoliojulkaisu](https://raide-railway-intelligence-2026.sandeep-pariyar.chatgpt.site) · vaihtoehtoinen verkko-osoite.
+- [GitHub Actions](https://github.com/sandeepariyar/RAIDE/actions) · testaus, tuotantorakennus ja julkaisu `main`-haaran päivityksistä.
+
+GitHub Pages -rakennus käyttää `/RAIDE/`-polkua. Reaaliaikainen tila hakee tiedot Digitrafficin avoimesta rajapinnasta; tallennetila käyttää mukana julkaistuja havaintoja ja toimii ilman reaaliaikaista yhteyttä.
 
 ## Käyttöönotto
 
