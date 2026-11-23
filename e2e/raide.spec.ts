@@ -10,6 +10,29 @@ async function recordedApplication(page: Page) {
   await page.getByRole('button', { name: 'Tallenne', exact: true }).click();
 }
 
+async function expectNoPageOverflow(page: Page, tolerance = 2) {
+  const extent = await page.evaluate(() => {
+    const viewport = document.documentElement.clientWidth;
+    const content = document.documentElement.scrollWidth;
+    const offenders =
+      content > viewport + 2
+        ? Array.from(document.querySelectorAll('*'))
+            .filter((node) => node.getBoundingClientRect().right > viewport + 2)
+            .slice(0, 12)
+            .map((node) => ({
+              element: node.tagName.toLowerCase(),
+              className: String((node as HTMLElement).className ?? '').slice(0, 80),
+              right: Math.round(node.getBoundingClientRect().right),
+            }))
+        : [];
+    return { viewport, content, offenders };
+  });
+  expect(
+    extent.content,
+    `Vaakaylivuodon elementit: ${JSON.stringify(extent.offenders)}`,
+  ).toBeLessThanOrEqual(extent.viewport + tolerance);
+}
+
 test('ensiesittelyn tallennemuutos avaa havaintohistorian loppuun asti', async ({ page }) => {
   await recordedApplication(page);
   await page.getByRole('button', { name: /Katso tallenteen esimerkkimuutokset/ }).click();
@@ -252,11 +275,7 @@ test('mobiilin keskeiset näkymät pysyvät vaakasuunnassa sivun sisällä', asy
   await recordedApplication(page);
   for (const label of ['Muutostutka', 'Junan eteneminen', 'Aikataulut']) {
     await page.getByRole('button', { name: label, exact: true }).click();
-    const dimensions = await page.evaluate(() => ({
-      content: document.documentElement.scrollWidth,
-      viewport: document.documentElement.clientWidth,
-    }));
-    expect(dimensions.content).toBeLessThanOrEqual(dimensions.viewport + 2);
+    await expectNoPageOverflow(page);
   }
 });
 
@@ -323,11 +342,7 @@ test('pienen näytön lähdetieto pysyy näkyvissä eri tietonäkymissä', async
   for (const label of ['Elävä reittiverkko', 'Aikataulut', 'Junan eteneminen']) {
     await page.getByRole('button', { name: label, exact: true }).click();
     await expect(page.locator('.source-pill')).toBeVisible();
-    const extent = await page.evaluate(() => ({
-      content: document.documentElement.scrollWidth,
-      viewport: document.documentElement.clientWidth,
-    }));
-    expect(extent.content).toBeLessThanOrEqual(extent.viewport + 3);
+    await expectNoPageOverflow(page, 3);
   }
 });
 

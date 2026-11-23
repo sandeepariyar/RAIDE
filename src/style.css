@@ -5820,6 +5820,19 @@ select:focus-visible {
     flex-basis: auto;
     white-space: nowrap;
   }
+  .chart-preferences {
+    flex-wrap: wrap;
+    gap: 9px;
+    padding: 12px 14px 5px;
+  }
+  .chart-preferences > span {
+    flex: 1 1 100%;
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+  .chart-preferences button {
+    max-width: 100%;
+  }
   .chart-footer {
     font-size: 0.76rem;
   }
