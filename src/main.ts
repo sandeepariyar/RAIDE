@@ -638,7 +638,7 @@ class RaideApp extends LitElement {
                 type="range"
                 min="0"
                 .max=${String(duration)}
-                step="1"
+                step="any"
                 .value=${String(this.replayPosition)}
                 aria-label="Tallenteen toistokohta"
                 aria-valuetext=${`${time(this.now)}, ${date(this.now)}`}

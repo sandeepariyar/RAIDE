@@ -217,7 +217,7 @@ test('liikenteen vasen ja oikea paneeli ovat samankorkuisia työpöydällä', as
 
 test('muutostutkan aika- ja tyyppirajaukset muuttavat samaa havaintonäkymää', async ({ page }) => {
   await recordedApplication(page);
-  await page.getByRole('button', { name: 'Muutostutka' }).click();
+  await page.getByRole('button', { name: 'Muutostutka', exact: true }).click();
   const radar = page.locator('raide-change-radar');
   await expect(radar).toBeVisible();
   await expect(radar.getByRole('button', { name: '15 min' })).toHaveAttribute(
