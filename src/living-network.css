@@ -1,0 +1,1050 @@
+/* RAIDE Living Network / Elävä rataverkko
+   A timetable-observation schematic, NOT an interlocking, signal, switch,
+   track-occupancy, or movement-authority display. Accent colours describe
+   selected services and observed data changes only. */
+
+raide-living-network {
+  display: block;
+  min-width: 0;
+  width: 100%;
+}
+
+raide-living-network .living-network {
+  --living-bg: #091824;
+  --living-canvas: #0b1f2c;
+  --living-surface: #122a3b;
+  --living-raised: #1a3548;
+  --living-edge: #557185;
+  --living-border: #345266;
+  --living-ink: #eef8fb;
+  --living-secondary: #b2cad9;
+  --living-cyan: #84e8e0;
+  --living-mint: #84eac6;
+  --living-amber: #ffbc7b;
+  --living-muted: #809ba9;
+  --living-focus: #b7fff0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(276px, 300px);
+  grid-template-areas:
+    'head head'
+    'controls controls'
+    'stage inspector'
+    'timeline inspector'
+    'legend legend';
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--living-border);
+  border-radius: 14px;
+  background: var(--living-bg);
+  box-shadow:
+    0 18px 50px #020a13aa,
+    inset 0 1px #e1f9ff0a;
+  color: var(--living-ink);
+  font-family: 'IBM Plex Sans', 'Segoe UI', sans-serif;
+  font-size: 16px;
+  line-height: 1.45;
+  isolation: isolate;
+}
+
+raide-living-network .living-network *,
+raide-living-network .living-network *::before,
+raide-living-network .living-network *::after {
+  box-sizing: border-box;
+}
+
+raide-living-network .living-network-head {
+  grid-area: head;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  min-width: 0;
+  min-height: 92px;
+  padding: 20px 25px;
+  border-bottom: 1px solid #365569;
+  background:
+    radial-gradient(ellipse at 85% 0%, #26778326 0, transparent 65%),
+    linear-gradient(116deg, #1a394a, #122a3a 68%);
+}
+
+raide-living-network .living-network-head h2,
+raide-living-network .living-network-head h3 {
+  margin: 0;
+  color: #f0fcff;
+  font-size: clamp(1.2rem, 1.45vw, 1.48rem);
+  font-weight: 660;
+  letter-spacing: -0.025em;
+  line-height: 1.25;
+}
+
+raide-living-network .living-network-head p {
+  max-width: 740px;
+  margin: 7px 0 0;
+  color: var(--living-secondary);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+raide-living-network .living-network-head .eyebrow,
+raide-living-network .living-network-head small {
+  display: block;
+  margin-bottom: 6px;
+  color: #a1e3d2;
+  font-size: 0.75rem;
+  font-weight: 680;
+  letter-spacing: 0.105em;
+  text-transform: uppercase;
+}
+
+raide-living-network .living-network-head .status,
+raide-living-network .living-network-head .badge,
+raide-living-network .living-network-head [data-role='status'] {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+  padding: 8px 11px;
+  border: 1px solid #47796f;
+  border-radius: 7px;
+  background: #184538;
+  color: #c5ffeb;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+raide-living-network .living-network-head .status[data-source='limited'] {
+  border-color: #9b7950;
+  background: #493420;
+  color: #ffe2aa;
+}
+
+raide-living-network .living-network-head .status[data-source='stale'] {
+  border-color: #a86765;
+  background: #4d262d;
+  color: #ffd1c6;
+}
+
+raide-living-network .living-network-controls {
+  grid-area: controls;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 11px;
+  min-height: 64px;
+  padding: 12px 22px;
+  border-bottom: 1px solid #304b5e;
+  background: #102737;
+}
+
+raide-living-network .living-network-controls label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #bcd2df;
+  font-size: 0.84rem;
+  font-weight: 540;
+}
+
+raide-living-network .living-network-controls button,
+raide-living-network .living-network-controls select,
+raide-living-network .living-network-controls input:not([type='range']) {
+  min-height: 39px;
+  padding: 8px 12px;
+  border: 1px solid #446277;
+  border-radius: 8px;
+  background: #152f42;
+  color: #d7e9f3;
+  font:
+    550 0.85rem 'IBM Plex Sans',
+    'Segoe UI',
+    sans-serif;
+  line-height: 1.3;
+}
+
+raide-living-network .living-network-controls select {
+  min-width: 175px;
+  padding-right: 34px;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23b7d4df' stroke-width='1.5'%3E%3Cpath d='m2.5 4 3.5 3.5L9.5 4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+}
+
+raide-living-network .living-network-controls button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  cursor: pointer;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease;
+}
+
+raide-living-network .living-network-controls button:hover:not(:disabled),
+raide-living-network .living-network-controls select:hover {
+  background-color: #22475a;
+  border-color: #6c94a6;
+}
+
+raide-living-network .living-network-controls button.active,
+raide-living-network .living-network-controls button.is-active,
+raide-living-network .living-network-controls button[aria-pressed='true'] {
+  background: #245749;
+  border-color: #6fc4aa;
+  color: #d0fff0;
+  box-shadow: inset 0 0 0 1px #bcffed14;
+}
+
+raide-living-network .living-network-lenses,
+raide-living-network .living-network-zoom {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 3px;
+  padding: 3px;
+  border: 1px solid #3e6273;
+  border-radius: 10px;
+  background: #0e2231;
+}
+
+raide-living-network .living-network-lenses button,
+raide-living-network .living-network-zoom button {
+  min-height: 34px;
+  border-color: transparent;
+  background: transparent;
+  border-radius: 7px;
+  padding: 7px 10px;
+}
+
+raide-living-network .living-network-lenses button[aria-pressed='true'] {
+  border-color: #5c9d8c;
+  background: #245548;
+}
+
+raide-living-network .living-network-branches {
+  white-space: nowrap;
+}
+
+raide-living-network .living-network-branches input {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: var(--living-mint);
+}
+
+raide-living-network .living-network-zoom {
+  margin-left: auto;
+}
+
+raide-living-network .living-network-zoom button[aria-label='Palauta kaavion koko'] {
+  min-width: 64px;
+  color: #cdebf3;
+  font-family: 'IBM Plex Mono', monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+raide-living-network .living-network-stage {
+  grid-area: stage;
+  position: relative;
+  min-width: 0;
+  min-height: 490px;
+  height: clamp(490px, 50vw, 720px);
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #4c7384 #102737;
+  background:
+    radial-gradient(ellipse 58% 50% at 54% 52%, #183f4b99 0, transparent 77%),
+    linear-gradient(#72a9ba0b 1px, transparent 1px),
+    linear-gradient(90deg, #72a9ba0b 1px, transparent 1px),
+    linear-gradient(140deg, #091b27, #0c2431);
+  background-size:
+    auto,
+    40px 40px,
+    40px 40px,
+    auto;
+  touch-action: pan-x pan-y;
+}
+
+raide-living-network .living-network-stage::after {
+  content: '';
+  position: sticky;
+  display: block;
+  z-index: 0;
+  bottom: 0;
+  width: 100%;
+  height: 1px;
+  background: #44687933;
+  pointer-events: none;
+}
+
+raide-living-network .living-network-svg {
+  display: block;
+  /* The renderer owns width/height attributes so its zoom controls can change
+     the real SVG scroll footprint. A CSS width would defeat that behaviour. */
+  width: auto;
+  max-width: none;
+  min-width: 0;
+  overflow: visible;
+  shape-rendering: geometricPrecision;
+  text-rendering: optimizeLegibility;
+}
+
+raide-living-network .living-network-svg text {
+  fill: #b8cfdd;
+  font-family: 'IBM Plex Sans', 'Segoe UI', sans-serif;
+  font-size: 14px;
+  font-weight: 520;
+  pointer-events: none;
+  user-select: none;
+}
+
+raide-living-network .living-network-svg .minor,
+raide-living-network .living-network-svg .is-secondary,
+raide-living-network .living-network-svg [data-role='secondary-label'] {
+  fill: #8aabba;
+  font-size: 12px;
+  font-weight: 450;
+}
+
+/* Shape selectors support both grouped and directly classed SVG elements. */
+raide-living-network .living-network-edge {
+  cursor: pointer;
+}
+
+raide-living-network .living-network-edge .living-network-ink {
+  fill: none;
+  stroke: var(--living-edge);
+  stroke-width: 2.5px;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+  transition:
+    stroke 180ms ease,
+    stroke-width 180ms ease,
+    opacity 180ms ease;
+}
+
+raide-living-network .living-network-edge.is-muted .living-network-ink,
+raide-living-network .living-network-edge.is-unknown .living-network-ink,
+raide-living-network .living-network-edge[data-state='unknown'] .living-network-ink,
+raide-living-network .living-network-edge[data-state='unavailable'] .living-network-ink {
+  opacity: 0.48;
+}
+
+/* Mint means a timetable service has confirmed actual station events at both
+   endpoints. It never represents an occupied or clear physical track section. */
+raide-living-network .living-network-edge.is-confirmed .living-network-ink,
+raide-living-network .living-network-edge[data-state='confirmed'] .living-network-ink {
+  stroke: var(--living-mint);
+  stroke-width: 3px;
+  opacity: 0.95;
+}
+
+raide-living-network .living-network-edge.is-selected .living-network-ink,
+raide-living-network .living-network-edge[data-state='selected'] .living-network-ink {
+  stroke: var(--living-cyan);
+  stroke-width: 4px;
+  opacity: 1;
+  filter: drop-shadow(0 0 3px #70eee766);
+}
+
+raide-living-network .living-network-edge.is-changed .living-network-ink,
+raide-living-network .living-network-edge[data-state='changed'] .living-network-ink {
+  stroke: var(--living-amber);
+  stroke-width: 3.5px;
+  opacity: 1;
+}
+
+raide-living-network .living-network-edge.is-selected.is-changed .living-network-ink {
+  stroke: var(--living-cyan);
+  stroke-width: 4.5px;
+}
+
+raide-living-network .living-network-edge.is-focused .living-network-ink {
+  stroke-width: 5px;
+  filter: drop-shadow(0 0 4px #c6fffaa3);
+}
+
+raide-living-network .living-network-node {
+  cursor: pointer;
+  outline: none;
+}
+
+raide-living-network .living-network-node :is(circle, rect, ellipse),
+raide-living-network :is(circle, rect, ellipse).living-network-node {
+  fill: #16384a;
+  stroke: #7098a9;
+  stroke-width: 1.7px;
+  vector-effect: non-scaling-stroke;
+  transition:
+    fill 160ms ease,
+    stroke 160ms ease;
+}
+
+raide-living-network .living-network-node text,
+raide-living-network .living-network-node .label {
+  fill: #e1eff7;
+  font-size: 14px;
+  font-weight: 590;
+}
+
+raide-living-network .living-network-node:hover :is(circle, rect, ellipse),
+raide-living-network .living-network-node:focus-visible :is(circle, rect, ellipse) {
+  stroke: #c3f6f2;
+  fill: #255669;
+}
+
+raide-living-network .living-network-node.is-selected :is(circle, rect, ellipse),
+raide-living-network .living-network-node[data-state='selected'] :is(circle, rect, ellipse) {
+  fill: #1d756f;
+  stroke: #a2fff0;
+  stroke-width: 2.5px;
+  filter: drop-shadow(0 0 5px #4ee9dc44);
+}
+
+raide-living-network .living-network-node.is-changed :is(circle, rect, ellipse),
+raide-living-network .living-network-node[data-state='changed'] :is(circle, rect, ellipse) {
+  fill: #735034;
+  stroke: #ffd09d;
+  stroke-width: 2.5px;
+}
+
+raide-living-network .living-network-service {
+  cursor: pointer;
+  outline: none;
+}
+
+raide-living-network .living-network-service :is(circle, rect, ellipse),
+raide-living-network :is(circle, rect, ellipse).living-network-service {
+  fill: #19483f;
+  stroke: #8be7cf;
+  stroke-width: 2px;
+  vector-effect: non-scaling-stroke;
+}
+
+raide-living-network .living-network-service text,
+raide-living-network .living-network-service .label {
+  fill: #d5fff0;
+  font-weight: 650;
+}
+
+raide-living-network .living-network-service :is(path, line, polyline) {
+  fill: none;
+  stroke: var(--living-cyan);
+  stroke-width: 3px;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+raide-living-network .living-network-service.is-selected :is(circle, rect, ellipse),
+raide-living-network .living-network-service[data-state='selected'] :is(circle, rect, ellipse) {
+  fill: #137d79;
+  stroke: #b9fff3;
+  stroke-width: 3px;
+  filter: drop-shadow(0 0 7px #76f4e37a);
+}
+
+raide-living-network .living-network-service.is-changed :is(circle, rect, ellipse),
+raide-living-network .living-network-service[data-state='changed'] :is(circle, rect, ellipse) {
+  fill: #7a4b2b;
+  stroke: #ffc17f;
+}
+
+raide-living-network .living-network-svg :is(a, button, [role='button'], [tabindex]):focus-visible {
+  outline: 2px solid var(--living-focus);
+  outline-offset: 5px;
+  filter: drop-shadow(0 0 5px #b7fff099);
+}
+
+raide-living-network .living-network-inspector {
+  grid-area: inspector;
+  min-width: 0;
+  padding: 21px 19px;
+  background: linear-gradient(155deg, #17384a80, transparent 48%), #112839;
+  border-left: 1px solid #365769;
+  overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #4c7384 transparent;
+}
+
+raide-living-network .living-network-inspector h3,
+raide-living-network .living-network-inspector h4 {
+  margin: 0 0 12px;
+  font-size: 1.06rem;
+  font-weight: 660;
+  letter-spacing: -0.01em;
+  color: #eaf9fc;
+}
+
+raide-living-network .living-network-inspector .eyebrow,
+raide-living-network .living-network-inspector small {
+  color: #91dbc8;
+  font-size: 0.76rem;
+  font-weight: 650;
+  letter-spacing: 0.055em;
+}
+
+raide-living-network .living-network-inspector p,
+raide-living-network .living-network-inspector li,
+raide-living-network .living-network-inspector dd {
+  color: #bbd0de;
+  font-size: 0.875rem;
+  line-height: 1.55;
+}
+
+raide-living-network .living-network-inspector dl {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px 9px;
+  margin: 14px 0;
+  padding: 14px;
+  border: 1px solid #3b5b70;
+  border-radius: 9px;
+  background: #163246;
+}
+
+raide-living-network .living-network-inspector dt {
+  color: #a9c2d1;
+  font-size: 0.79rem;
+}
+
+raide-living-network .living-network-inspector dd {
+  margin: 0;
+  color: #e6f4fa;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.84rem;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+raide-living-network .living-network-inspector button {
+  min-height: 38px;
+  padding: 8px 11px;
+  border: 1px solid #507789;
+  border-radius: 8px;
+  color: #d1f7ed;
+  background: #1b4a49;
+  font-size: 0.84rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+raide-living-network .living-network-inspector button:hover {
+  background: #28605b;
+}
+
+raide-living-network .living-network-inspector-train {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin: 5px 5px 0 0;
+}
+
+raide-living-network .living-network-summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin: 18px 0;
+}
+
+raide-living-network .living-network-summary > div {
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid #3a6274;
+  border-radius: 9px;
+  background: #173b4a;
+}
+
+raide-living-network .living-network-summary strong {
+  display: block;
+  color: #d1fff0;
+  font:
+    650 1.55rem 'IBM Plex Mono',
+    monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+raide-living-network .living-network-summary span {
+  display: block;
+  margin-top: 6px;
+  color: #bbd0dc;
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+
+raide-living-network .living-network-caveat {
+  margin-top: 17px;
+  padding: 12px;
+  border-left: 3px solid #7cbbaf;
+  border-radius: 5px;
+  background: #173841;
+  color: #bcd7dc;
+  font-size: 0.8rem;
+  line-height: 1.55;
+}
+
+raide-living-network .living-network-timeline {
+  grid-area: timeline;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px 18px;
+  min-width: 0;
+  min-height: 78px;
+  padding: 15px 23px;
+  background: #102b3a;
+  border-top: 1px solid #37596a;
+}
+
+raide-living-network .living-network-timeline label,
+raide-living-network .living-network-timeline time,
+raide-living-network .living-network-timeline output {
+  color: #c5dae5;
+  font-size: 0.82rem;
+  font-weight: 550;
+}
+
+raide-living-network .living-network-timeline time,
+raide-living-network .living-network-timeline output {
+  color: #e7f5fb;
+  font-family: 'IBM Plex Mono', monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+raide-living-network .living-network-timeline-title {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 165px;
+}
+
+raide-living-network .living-network-timeline-title label {
+  color: #9edbcf;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+raide-living-network .living-network-spark {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex: 1 1 210px;
+  gap: 5px;
+  min-width: 125px;
+  height: 50px;
+  padding: 4px 2px 0;
+  border-bottom: 1px solid #5b91a0;
+}
+
+raide-living-network .living-network-spark > div {
+  flex: 1;
+  min-width: 4px;
+  max-width: 45px;
+  border: 1px solid #6edbd2;
+  border-bottom: 0;
+  border-radius: 3px 3px 0 0;
+  background: linear-gradient(180deg, #8df6df, #236c79);
+  opacity: 0.82;
+  transition: height 180ms ease;
+}
+
+raide-living-network .living-network-timeline input[type='range'] {
+  flex: 1 1 220px;
+  width: 100%;
+  min-width: 115px;
+  height: 8px;
+  margin: 0;
+  cursor: pointer;
+  accent-color: var(--living-cyan);
+}
+
+raide-living-network .living-network-timeline button {
+  min-height: 36px;
+  padding: 8px 10px;
+  border: 1px solid #4c7181;
+  border-radius: 7px;
+  color: #deeff6;
+  background: #193748;
+  font-size: 0.82rem;
+  font-weight: 550;
+  cursor: pointer;
+}
+
+raide-living-network .living-network-timeline button:hover:not(:disabled) {
+  border-color: #80c2c0;
+  background: #235067;
+}
+
+raide-living-network .living-network-legend {
+  grid-area: legend;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 13px 22px;
+  min-width: 0;
+  padding: 14px 24px;
+  border-top: 1px solid #365467;
+  background: #0e2432;
+  color: #aac3d3;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+raide-living-network .living-network-legend > * {
+  min-width: 0;
+}
+
+raide-living-network .living-network-legend .legend-item,
+raide-living-network .living-network-legend [data-role='legend-item'] {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #c6dbe6;
+  white-space: nowrap;
+}
+
+raide-living-network .living-network-legend .legend-swatch,
+raide-living-network .living-network-legend [data-role='swatch'] {
+  display: inline-block;
+  width: 22px;
+  height: 4px;
+  flex: 0 0 auto;
+  border-radius: 4px;
+  background: var(--living-edge);
+}
+
+raide-living-network .living-network-legend .legend-swatch.selected,
+raide-living-network .living-network-legend .legend-swatch.service {
+  background: var(--living-cyan);
+}
+
+raide-living-network .living-network-legend .legend-swatch.changed,
+raide-living-network .living-network-legend .legend-swatch.evidence {
+  background: var(--living-amber);
+}
+
+raide-living-network .living-network-legend .legend-swatch.confirmed {
+  background: var(--living-mint);
+}
+
+/* Distinct evidence states: never imply an operational signal or occupied track. */
+raide-living-network .living-network-edge.is-forecast:not(.is-selected) .living-network-ink {
+  stroke: #ffbd7d;
+  stroke-width: 3.5px;
+  stroke-dasharray: 10 5;
+}
+
+raide-living-network .living-network-edge.is-cancelled:not(.is-selected) .living-network-ink {
+  stroke: #ff7182;
+  stroke-width: 4px;
+  stroke-dasharray: 3 5;
+  filter: drop-shadow(0 0 3px #fb5f7840);
+}
+
+raide-living-network
+  .living-network-edge.has-unknown:not(.is-selected, .is-cancelled, .is-forecast)
+  .living-network-ink {
+  stroke: #baa2f5;
+  stroke-dasharray: 2 6;
+}
+
+raide-living-network .living-network-edge.is-gap .living-network-ink,
+raide-living-network .living-network-edge.is-gap.is-selected .living-network-ink {
+  stroke: #eac18a;
+  stroke-width: 3px;
+  stroke-dasharray: 6 9;
+  stroke-linejoin: round;
+  opacity: 0.92;
+  filter: drop-shadow(0 0 3px #e0b98244);
+}
+
+raide-living-network .living-network-svg text.gap-label {
+  fill: #eacc9e;
+  font-size: 14px;
+  font-weight: 720;
+  letter-spacing: 0.045em;
+}
+
+raide-living-network .living-network-svg text.edge-flow {
+  fill: #cee9f5;
+  font-size: 14px;
+  font-weight: 720;
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+raide-living-network .living-network-svg text.source-label {
+  fill: #bfe2ec;
+  font-size: 14px;
+  font-weight: 680;
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+raide-living-network .living-network-node rect.living-network-hit-target,
+raide-living-network .living-network-node.is-selected rect.living-network-hit-target,
+raide-living-network .living-network-node:hover rect.living-network-hit-target {
+  fill: transparent;
+  stroke: none;
+  filter: none;
+  pointer-events: all;
+}
+
+raide-living-network .living-network-node.is-search rect:not(.living-network-hit-target) {
+  fill: #536f3a;
+  stroke: #f5ec9a;
+  stroke-width: 3px;
+  filter: drop-shadow(0 0 6px #f5e77880);
+}
+
+raide-living-network .living-network-service.is-search rect {
+  stroke: #f6e487;
+  stroke-width: 3px;
+  filter: drop-shadow(0 0 6px #f0dc7e88);
+}
+
+raide-living-network .living-network-zoom button.fit-button {
+  color: #cbf7f1;
+  background: #1b4a4c;
+  border: 1px solid #497a7c;
+  padding-inline: 12px;
+}
+
+raide-living-network .living-network-zoom button[aria-pressed='true'] {
+  color: #c9fff0;
+  background: #245749;
+  border-color: #6fc4aa;
+}
+
+raide-living-network .living-network-overview-note {
+  position: sticky;
+  top: 12px;
+  left: 12px;
+  z-index: 3;
+  width: max-content;
+  max-width: calc(100% - 24px);
+  padding: 9px 12px;
+  border: 1px solid #638c9b;
+  border-radius: 8px;
+  background: #0d2a3bfa;
+  color: #d4edf2;
+  font-size: 14px;
+  font-weight: 600;
+  pointer-events: none;
+}
+
+raide-living-network .living-network-stage[data-overview='true'] .living-network-svg text {
+  opacity: 0;
+}
+
+raide-living-network .living-network-legend .legend-swatch.gap {
+  background: repeating-linear-gradient(90deg, #eac18a 0 6px, transparent 6px 11px);
+}
+
+raide-living-network .living-network-legend .legend-swatch.forecast {
+  background: repeating-linear-gradient(90deg, #ffbd7d 0 8px, transparent 8px 13px);
+}
+
+raide-living-network .living-network-legend .legend-swatch.cancelled {
+  background: repeating-linear-gradient(120deg, #ff7182 0 3px, #482a3b 3px 7px);
+}
+
+raide-living-network .living-network-legend .legend-swatch.unknown {
+  background: repeating-linear-gradient(90deg, #baa2f5 0 3px, transparent 3px 8px);
+}
+
+raide-living-network .living-network-legend .disclaimer,
+raide-living-network .living-network-legend small {
+  color: #9db9c7;
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+raide-living-network .living-network-empty {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 11px;
+  min-height: 240px;
+  padding: 40px 24px;
+  color: #bfd5df;
+  background: #0e2535;
+  text-align: center;
+}
+
+raide-living-network .living-network-empty h3,
+raide-living-network .living-network-empty strong {
+  color: #e4f4f9;
+  font-size: 1.08rem;
+  font-weight: 630;
+}
+
+raide-living-network .living-network-empty p {
+  max-width: 500px;
+  font-size: 0.875rem;
+  line-height: 1.55;
+}
+
+/* Optional body wrapper for component implementations that group the stage
+   and inspector. The direct-child grid remains valid without this wrapper. */
+raide-living-network .living-network-body {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(276px, 300px);
+  min-width: 0;
+}
+
+raide-living-network .living-network-body > .living-network-stage {
+  grid-area: auto;
+  min-width: 0;
+}
+
+raide-living-network .living-network-body > .living-network-inspector {
+  grid-area: auto;
+}
+
+raide-living-network .living-network-body > .living-network-timeline {
+  grid-area: auto;
+  grid-column: 1;
+}
+
+raide-living-network .living-network-body > .living-network-legend {
+  grid-area: auto;
+  grid-column: 1 / -1;
+}
+
+raide-living-network .living-network button:focus-visible,
+raide-living-network .living-network select:focus-visible,
+raide-living-network .living-network input:focus-visible,
+raide-living-network .living-network [tabindex]:focus-visible {
+  outline: 2px solid var(--living-focus);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 4px #82edda29;
+}
+
+@media (max-width: 1080px) {
+  raide-living-network .living-network {
+    grid-template-columns: minmax(0, 1fr) minmax(248px, 270px);
+  }
+
+  raide-living-network .living-network-body {
+    grid-template-columns: minmax(0, 1fr) minmax(248px, 270px);
+  }
+
+  raide-living-network .living-network-head {
+    padding: 18px 20px;
+  }
+
+  raide-living-network .living-network-inspector {
+    padding: 17px 14px;
+  }
+}
+
+@media (max-width: 850px) {
+  raide-living-network .living-network {
+    display: flex;
+    flex-direction: column;
+  }
+
+  raide-living-network .living-network-body {
+    display: flex;
+    flex-direction: column;
+  }
+
+  raide-living-network .living-network-stage {
+    height: 500px;
+    min-height: 420px;
+  }
+
+  raide-living-network .living-network-inspector {
+    border-left: 0;
+    border-top: 1px solid #365769;
+    max-height: none;
+  }
+
+  raide-living-network .living-network-legend {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 500px) {
+  raide-living-network .living-network {
+    border-radius: 10px;
+  }
+
+  raide-living-network .living-network-head {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+    padding: 17px;
+  }
+
+  raide-living-network .living-network-head h2,
+  raide-living-network .living-network-head h3 {
+    font-size: 1.27rem;
+  }
+
+  raide-living-network .living-network-controls {
+    padding: 12px;
+    gap: 8px;
+  }
+
+  raide-living-network .living-network-controls label {
+    flex-wrap: wrap;
+    font-size: 0.8rem;
+  }
+
+  raide-living-network .living-network-controls select {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  raide-living-network .living-network-controls button {
+    min-height: 41px;
+  }
+
+  raide-living-network .living-network-stage {
+    height: 430px;
+    min-height: 430px;
+  }
+
+  raide-living-network .living-network-svg {
+    width: auto;
+    min-width: 0;
+  }
+
+  raide-living-network .living-network-timeline {
+    padding: 15px;
+  }
+
+  raide-living-network .living-network-timeline input[type='range'] {
+    order: 2;
+    flex-basis: 100%;
+  }
+
+  raide-living-network .living-network-inspector {
+    padding: 18px 15px;
+  }
+
+  raide-living-network .living-network-legend {
+    padding: 14px 16px;
+    gap: 10px 16px;
+    font-size: 0.77rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  raide-living-network .living-network *,
+  raide-living-network .living-network *::before,
+  raide-living-network .living-network *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

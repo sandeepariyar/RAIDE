@@ -1,0 +1,243 @@
+/*
+ * RAIDE interaction motion — a semantic, low-cost enhancement layer.
+ *
+ * Rules intentionally animate selection, affordances and a newly mounted view,
+ * never inferred train movement, a countdown, or the numerical railway data.
+ * Data-change cues must be opt-in (data-raide-motion="new-evidence") only after
+ * a real observation changes; a polling tick is not evidence of a change.
+ */
+
+raide-app {
+  --raide-motion-fast: 150ms;
+  --raide-motion-base: 190ms;
+  --raide-motion-slow: 240ms;
+  --raide-motion-ease: cubic-bezier(0.2, 0, 0, 1);
+}
+
+/* Selecting a workspace is a deliberate, but very short, context change. */
+raide-traffic-views
+  .traffic-stage
+  > :is(
+    .traffic-schematic-view,
+    .traffic-overview-view,
+    .traffic-journey-view,
+    .rail-schematic-view
+  ),
+raide-timetable
+  :is(
+    raide-heatmap .heatmap-shell,
+    raide-train-lanes .lanes-shell,
+    raide-traffic-flow .flow-shell,
+    .matrix-shell,
+    .deviation-shell
+  ) {
+  animation: raide-workspace-enter var(--raide-motion-base) var(--raide-motion-ease) both;
+}
+
+@keyframes raide-workspace-enter {
+  from {
+    opacity: 0.92;
+    transform: translate3d(0, 5px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* Common stateful navigation: fast feedback, no bouncing or sweeping decoration. */
+raide-app
+  :is(
+    .traffic-view-switch button,
+    .chart-modes button,
+    .mode-switch button,
+    .detail-tabs button,
+    .segmented button,
+    .side-rail nav button
+  ) {
+  transition:
+    color var(--raide-motion-fast) var(--raide-motion-ease),
+    background-color var(--raide-motion-fast) var(--raide-motion-ease),
+    border-color var(--raide-motion-fast) var(--raide-motion-ease),
+    box-shadow var(--raide-motion-fast) var(--raide-motion-ease);
+}
+
+raide-app :is(.traffic-view-switch button, .chart-modes button, .mode-switch button) {
+  position: relative;
+}
+
+/* The small rail appears only under the chosen display mode. */
+raide-app :is(.traffic-view-switch button, .chart-modes button).active::after {
+  content: '';
+  position: absolute;
+  inset-inline: 13px;
+  bottom: 1px;
+  height: 2px;
+  background: #7de6c5;
+  border-radius: 3px;
+  transform-origin: center;
+  animation: raide-selection-rail var(--raide-motion-slow) var(--raide-motion-ease) both;
+  pointer-events: none;
+}
+
+@keyframes raide-selection-rail {
+  from {
+    opacity: 0;
+    transform: scaleX(0.35);
+  }
+  to {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+}
+
+/* Press affordance is reserved for compact controls, never the data plot. */
+raide-app
+  :is(
+    .traffic-view-switch button,
+    .chart-modes button,
+    .mode-switch button,
+    .rail-expand-button,
+    .rail-list-more,
+    .traffic-follow-callout button
+  ):active:not(:disabled) {
+  filter: brightness(1.13);
+  transform: translate3d(0, 1px, 0);
+}
+
+/* A selected service gets one discreet acknowledgement in each representation. */
+raide-app
+  :is(
+    .traffic-train-chip.active,
+    .rail-train-marker.active,
+    .rail-approach-card.active,
+    .train-list tr.selected,
+    .queue-item.chosen,
+    .heat-cell.selected
+  ) {
+  animation: raide-target-arrived var(--raide-motion-slow) var(--raide-motion-ease) both;
+}
+
+@keyframes raide-target-arrived {
+  0% {
+    filter: brightness(1.19);
+  }
+  100% {
+    filter: brightness(1);
+  }
+}
+
+raide-app
+  :is(
+    .traffic-train-chip,
+    .rail-approach-card,
+    .train-select,
+    .queue-item,
+    .traffic-corridor-card,
+    .rail-train-marker,
+    .heat-cell
+  ) {
+  transition:
+    color var(--raide-motion-fast) var(--raide-motion-ease),
+    background-color var(--raide-motion-fast) var(--raide-motion-ease),
+    border-color var(--raide-motion-fast) var(--raide-motion-ease),
+    filter var(--raide-motion-fast) var(--raide-motion-ease),
+    transform var(--raide-motion-fast) var(--raide-motion-ease);
+}
+
+/* Real timeline progression (completed scheduled events) may change the fill. */
+raide-app :is(.traffic-journey-progress i, .metric-progress i, .traffic-loadbar i) {
+  transition: width var(--raide-motion-slow) var(--raide-motion-ease);
+}
+
+/* Keep a full-screen inspection workspace quiet when entering/exiting. */
+raide-app .rail-schematic-view.is-expanded {
+  animation: raide-inspector-enter var(--raide-motion-slow) var(--raide-motion-ease) both;
+}
+
+@keyframes raide-inspector-enter {
+  from {
+    opacity: 0.93;
+    transform: translate3d(0, 6px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* These hooks are ONLY for an actual changed observation, not a network poll.
+ * They are available to the evidence panel and future data-driven workspaces.
+ */
+raide-app [data-raide-motion='new-evidence'] {
+  animation: raide-evidence-enter var(--raide-motion-slow) var(--raide-motion-ease) both;
+}
+
+@keyframes raide-evidence-enter {
+  from {
+    opacity: 0.72;
+    transform: translate3d(0, -3px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+raide-app [data-raide-motion='selection-handoff'] {
+  animation: raide-target-arrived var(--raide-motion-slow) var(--raide-motion-ease) both;
+}
+
+/* Do not force a hover aesthetic on coarse touch devices. */
+@media (hover: hover) and (pointer: fine) {
+  raide-app :is(.rail-approach-card, .traffic-train-chip, .train-select):hover {
+    filter: brightness(1.07);
+  }
+}
+
+/* No visual animation should be required to understand a state. */
+@media (prefers-reduced-motion: reduce) {
+  raide-app
+    :is(
+      .traffic-view-switch button,
+      .chart-modes button,
+      .mode-switch button,
+      .detail-tabs button,
+      .segmented button,
+      .side-rail nav button,
+      .traffic-train-chip,
+      .rail-approach-card,
+      .train-select,
+      .queue-item,
+      .traffic-corridor-card,
+      .rail-train-marker,
+      .heat-cell,
+      .traffic-journey-progress i,
+      .metric-progress i,
+      .traffic-loadbar i
+    ) {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  raide-traffic-views .traffic-stage > *,
+  raide-timetable .advanced-visual,
+  raide-app .rail-schematic-view.is-expanded,
+  raide-app [data-raide-motion],
+  raide-app :is(.traffic-view-switch button, .chart-modes button).active::after {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  raide-app
+    :is(
+      .traffic-view-switch button,
+      .chart-modes button,
+      .mode-switch button,
+      .rail-expand-button,
+      .rail-list-more,
+      .traffic-follow-callout button
+    ):active:not(:disabled) {
+    transform: none;
+  }
+}

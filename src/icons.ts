@@ -1,0 +1,37 @@
+import { svg } from 'lit';
+const paths: Record<string, string> = {
+  map: 'm3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3V6m6-3v15m6-12v15',
+  network: 'M2 7h7l4 4h9M2 17h7l4-4h9M9 7V4m0 16v-3M13 11v2M22 11h-3m3 2h-3',
+  train:
+    'M7 3h10a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3V6a3 3 0 0 1 3-3ZM4 11h16M8 3v8m8-8v8M8 22l2-3m4 0 2 3M8 15h.01M16 15h.01',
+  chart: 'M4 3v17h17M7 16l5-7 4 4 5-8',
+  alert: 'm12 3 10 18H2L12 3Zm0 6v5m0 3h.01',
+  layers: 'm12 3 10 6-10 6L2 9l10-6Zm-10 12 10 6 10-6M2 12l10 6 10-6',
+  search: 'M21 21l-5-5m2-6a8 8 0 1 1-16 0 8 8 0 0 1 16 0',
+  chevron: 'm9 5 7 7-7 7',
+  down: 'm6 9 6 6 6-6',
+  refresh: 'M20 7a8 8 0 1 0 0 10M20 3v5h-5',
+  clock: 'M12 8v4l3 2m6-2a9 9 0 1 1-18 0 9 9 0 0 1 18 0',
+  play: 'm8 4 12 8-12 8V4',
+  pause: 'M8 4v16m8-16v16',
+  back: 'M5 4v16M19 4 7 12l12 8V4',
+  plus: 'M12 5v14M5 12h14',
+  minus: 'M5 12h14',
+  maximize: 'M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5',
+  minimize: 'M3 9h6V3m6 0v6h6M3 15h6v6m6 0v-6h6',
+  target: 'M12 2v4m0 12v4M2 12h4m12 0h4m-4-4a6 6 0 1 1-12 0 6 6 0 0 1 12 0',
+  info: 'M12 11v6m0-10h.01m9 5a9 9 0 1 1-18 0 9 9 0 0 1 18 0',
+  check: 'm5 12 4 4L19 6',
+  close: 'm6 6 12 12M6 18 18 6',
+  wifi: 'M2 8a16 16 0 0 1 20 0M5 12a11 11 0 0 1 14 0M8 16a5 5 0 0 1 8 0m-4 4h.01',
+  code: 'm8 5-7 7 7 7m8-14 7 7-7 7M14 3l-4 18',
+  settings: 'M4 7h16M4 17h16M8 4v6m8 4v6',
+  pin: 'M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0Zm-5 0a3 3 0 1 1-6 0 3 3 0 0 1 6 0',
+  download: 'M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5',
+  external: 'M14 3h7v7m0-7L10 14M10 3H3v18h18v-7',
+  book: 'M4 3h6a3 3 0 0 1 3 3v15a4 4 0 0 0-4-3H4V3Zm9 3a3 3 0 0 1 3-3h5v15h-4a4 4 0 0 0-4 3',
+  filter: 'M4 7h16M7 12h10M10 17h4',
+  sun: 'M12 3v2m0 14v2M3 12h2m14 0h2M5.6 5.6 7 7m10 10 1.4 1.4M5.6 18.4 7 17M17 7l1.4-1.4M16 12a4 4 0 1 1-8 0 4 4 0 0 1 8 0',
+};
+export const icon = (name: string, size = 20) =>
+  svg`<svg width=${size} height=${size} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d=${paths[name] ?? paths.info}/></svg>`;

@@ -1,0 +1,92 @@
+/* Operator HMI: predictable focus and touch targets without implying train control. */
+.rail-map:focus-visible {
+  outline: 3px solid #99ebdc;
+  outline-offset: -4px;
+}
+
+.rail-map .hmi-hit-target,
+.rail-map .map-train:hover .hmi-hit-target,
+.rail-map .map-cluster:hover .hmi-hit-target {
+  fill: transparent;
+  stroke: none;
+  pointer-events: all;
+}
+
+.rail-map .map-station:focus-visible,
+.rail-map .map-train:focus-visible,
+.rail-map .map-cluster:focus-visible {
+  outline: none;
+}
+
+.rail-map .map-station:focus-visible .station-dot,
+.rail-map .map-train:focus-visible .hmi-visible-marker,
+.rail-map .map-cluster:focus-visible .hmi-visible-marker {
+  stroke: #e5fff9;
+  stroke-width: 3px;
+  filter: drop-shadow(0 0 3px #2adfbd);
+}
+
+.map-controls .icon-button {
+  min-width: 36px;
+  min-height: 36px;
+  width: 36px;
+  height: 36px;
+}
+
+.map-controls .icon-button:focus-visible {
+  outline: 3px solid #a8f7d7;
+  outline-offset: 1px;
+}
+
+.map-top-overlay .hmi-map-help {
+  color: #b5d1de;
+  font-size: 0.75rem;
+  line-height: 1.45;
+  max-width: 240px;
+}
+
+.map-top-overlay .hmi-map-selected-observation {
+  display: grid;
+  width: max-content;
+  max-width: 240px;
+  gap: 3px;
+  border-left: 3px solid #88ebca;
+  background: #152e3ee8;
+  color: #c3dfe8;
+  padding: 7px 10px;
+  font-size: 0.75rem;
+  line-height: 1.35;
+  border-radius: 0 6px 6px 0;
+}
+
+.map-top-overlay .hmi-map-selected-observation strong {
+  color: #c9fff0;
+  font-weight: 750;
+}
+
+.map-top-overlay .hmi-map-filter-note {
+  max-width: 230px;
+  border: 1px solid #496778;
+  border-radius: 5px;
+  background: #1a3041cc;
+  padding: 5px 7px;
+  color: #bcecd8;
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+
+.map-tooltip .hmi-observation-source {
+  color: #9fd9cd;
+  font-size: 0.72rem;
+  display: block;
+  margin-top: 4px;
+}
+
+@media (pointer: coarse) {
+  .map-controls .icon-button {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+  }
+}

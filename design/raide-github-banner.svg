@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="360" viewBox="0 0 1280 360" role="img" aria-labelledby="title desc">
+  <title id="title">RAIDE — Raideliikenteen tilannekuva</title>
+  <desc id="desc">Tummansininen raideliikenteen analytiikan kuvitus, jossa junien reitit yhdistyvät aikataulu- ja rataverkkokaavioon.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#0C1725"/>
+      <stop offset="0.58" stop-color="#102539"/>
+      <stop offset="1" stop-color="#071722"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" x2="1">
+      <stop offset="0" stop-color="#6AE8C6"/>
+      <stop offset="1" stop-color="#3DB0D0"/>
+    </linearGradient>
+    <linearGradient id="fade" x1="0" x2="1">
+      <stop offset="0" stop-color="#7FC9F8" stop-opacity=".05"/>
+      <stop offset="1" stop-color="#7FC9F8" stop-opacity=".8"/>
+    </linearGradient>
+    <pattern id="grid" width="42" height="42" patternUnits="userSpaceOnUse">
+      <path d="M42 0H0V42" fill="none" stroke="#B5E7F8" stroke-opacity=".07" stroke-width="1"/>
+    </pattern>
+    <filter id="glow"><feGaussianBlur stdDeviation="7"/></filter>
+    <clipPath id="r"><rect width="1280" height="360" rx="22"/></clipPath>
+  </defs>
+  <g clip-path="url(#r)">
+    <rect width="1280" height="360" fill="url(#bg)"/>
+    <rect width="1280" height="360" fill="url(#grid)"/>
+    <path d="M0 346H1280" stroke="#7BDAC7" stroke-opacity=".24"/>
+    <path d="M76 54H118" stroke="#64DDC1" stroke-width="4" stroke-linecap="round"/>
+    <path d="M126 54H146" stroke="#7CC8E9" stroke-width="4" stroke-linecap="round"/>
+    <text x="76" y="121" font-family="'IBM Plex Sans',Inter,Arial,sans-serif" font-size="70" font-weight="700" letter-spacing="8" fill="#F0F7FF">RAIDE</text>
+    <text x="80" y="160" font-family="'IBM Plex Sans',Inter,Arial,sans-serif" font-size="19" font-weight="500" letter-spacing="1.1" fill="#82EDD6">RAIDELIIKENTEEN TILANNEKUVA</text>
+    <path d="M80 187H526" stroke="#A3CCDC" stroke-opacity=".22" stroke-width="1"/>
+    <text x="80" y="222" font-family="'IBM Plex Sans',Inter,Arial,sans-serif" font-size="16" fill="#B0CADA">Avoin junadata  ·  Yhtenäiset työtilat  ·  Selkeä tilannetieto</text>
+    <text x="80" y="272" font-family="'IBM Plex Mono',Consolas,monospace" font-size="14" fill="#73A4B5">DESIGN  /  ENGINEERING  /  RAIL INTELLIGENCE</text>
+    <rect x="80" y="302" width="178" height="27" rx="8" fill="#65DBC5" fill-opacity=".1" stroke="#65DBC5" stroke-opacity=".45"/>
+    <circle cx="96" cy="315.5" r="4" fill="#68E0C4"/>
+    <text x="109" y="320" font-family="'IBM Plex Sans',Inter,Arial,sans-serif" font-size="12" fill="#B9F7EA">FINNISH RAIL DATA</text>
+    <text x="279" y="320" font-family="'IBM Plex Mono',Consolas,monospace" font-size="11" fill="#7DA1B5">v1.7 · 2026</text>
+
+    <!-- Illustrative time–distance trajectories; these are not real train positions. -->
+    <g transform="translate(670 42)">
+      <rect x="0" y="0" width="552" height="275" rx="14" fill="#091522" stroke="#33536A"/>
+      <path d="M52 0V275M141 0V275M231 0V275M321 0V275M410 0V275M499 0V275" stroke="#93B9D0" stroke-opacity=".11"/>
+      <path d="M0 50H552M0 106H552M0 162H552M0 218H552" stroke="#93B9D0" stroke-opacity=".17"/>
+      <text x="20" y="21" font-family="'IBM Plex Mono',Consolas,monospace" font-size="11" fill="#80AABF">AIKA–PAIKKA</text>
+      <text x="463" y="21" font-family="'IBM Plex Mono',Consolas,monospace" font-size="10" fill="#6FB5BC">16:30 – 18:30</text>
+      <path d="M4 208L155 166L284 119L535 52" stroke="#77D9C3" stroke-width="12" stroke-opacity=".14" filter="url(#glow)" fill="none"/>
+      <path d="M4 208L155 166L284 119L535 52" stroke="url(#accent)" stroke-width="3.5" fill="none"/>
+      <path d="M20 62L145 91L253 151L430 209L542 240" stroke="#77BAEA" stroke-opacity=".7" stroke-width="2.3" fill="none"/>
+      <path d="M6 107L124 130L290 148L458 165L545 190" stroke="#79A8CD" stroke-opacity=".6" stroke-width="1.8" stroke-dasharray="7 6" fill="none"/>
+      <path d="M55 225L158 198L281 181L399 130L539 89" stroke="#B99CED" stroke-opacity=".65" stroke-width="2.3" fill="none"/>
+      <g fill="#7CE3CB" stroke="#0B2631" stroke-width="3">
+        <circle cx="155" cy="166" r="5.5"/><circle cx="284" cy="119" r="5.5"/>
+      </g>
+      <rect x="268" y="92" width="69" height="22" rx="6" fill="#244F59" stroke="#539B9A"/>
+      <text x="282" y="107" font-family="'IBM Plex Mono',Consolas,monospace" font-size="12" fill="#C3FBEF">IC 51</text>
+      <rect x="414" y="191" width="69" height="22" rx="6" fill="#1D3C5B" stroke="#4D7BA2"/>
+      <text x="427" y="206" font-family="'IBM Plex Mono',Consolas,monospace" font-size="12" fill="#BCE3FF">R 9697</text>
+      <path d="M321 25V260" stroke="#63D6BA" stroke-width="1.4" stroke-dasharray="4 5" stroke-opacity=".65"/>
+      <rect x="303" y="252" width="36" height="5" rx="2.5" fill="#7CE3CB"/>
+      <text x="20" y="264" font-family="'IBM Plex Mono',Consolas,monospace" font-size="11" fill="#7191A6">RAIDE / VISUAL EXPLORATION</text>
+    </g>
+    <text x="1196" y="341" text-anchor="end" font-family="'IBM Plex Mono',Consolas,monospace" font-size="10" fill="#759FB2">KUVITUS · EI OPERATIIVINEN NÄYTTÖ</text>
+  </g>
+</svg>

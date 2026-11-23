@@ -1,0 +1,792 @@
+/* RAIDE command shell — a consistent operator workspace, not a marketing page.
+   This file intentionally owns only shared application chrome and focus mode;
+   individual railway visualizations keep their own palettes and data semantics. */
+
+:root {
+  --shell-bg: #07141f;
+  --shell-rail: #091a27;
+  --shell-raised: #122b3d;
+  --shell-rule: #375467;
+  --shell-rule-strong: #5a8794;
+  --shell-text: #edf9fd;
+  --shell-secondary: #bad0de;
+  --shell-cyan: #89e5df;
+  --shell-mint: #90e9c4;
+  --shell-danger: #ff9693;
+}
+
+html,
+body {
+  background: var(--shell-bg);
+  color: var(--shell-text);
+}
+
+raide-app .app-shell {
+  background:
+    radial-gradient(circle at 95% -10%, #1f536026, transparent 40%),
+    linear-gradient(180deg, #0a1925 0%, #07141f 44%);
+}
+
+/* Navigation remains visually subordinate to the working data. */
+raide-app .side-rail {
+  width: 86px;
+  background: #071722;
+  border-color: #294656;
+  box-shadow: inset -1px 0 #e8f8ff05;
+}
+
+raide-app .rail-brand {
+  height: 74px;
+  color: #9cecd2;
+  border-bottom-color: #2b4858;
+  background: linear-gradient(160deg, #153b43, #0b2532);
+}
+
+raide-app .rail-brand svg {
+  filter: drop-shadow(0 0 8px #75e5cc36);
+}
+
+raide-app .side-rail nav {
+  gap: 5px;
+  padding-top: 14px;
+}
+
+raide-app .side-rail nav button {
+  min-height: 68px;
+  gap: 6px;
+  padding: 9px 3px;
+  color: #adc1d0;
+  font-size: 0.83rem;
+  font-weight: 550;
+  border-left: 3px solid transparent;
+}
+
+raide-app .side-rail nav button svg {
+  opacity: 0.85;
+}
+
+raide-app .side-rail nav button.active {
+  background: linear-gradient(90deg, #2b74672e, #112a3555 75%);
+  border-left-color: #8de6c7;
+  color: #e2fff3;
+}
+
+raide-app .side-rail nav button.active svg {
+  opacity: 1;
+  color: #9ef2d6;
+}
+
+raide-app .side-rail nav button:hover:not(.active) {
+  background: #16303f;
+  color: #f5fcff;
+}
+
+raide-app .rail-version {
+  font-size: 0.75rem;
+  color: #96b2c4;
+}
+
+raide-app .main-shell {
+  margin-left: 86px;
+  min-width: 0;
+}
+
+/* Clear operating context. The source pill remains visible even at 390px. */
+raide-app .topbar {
+  position: relative;
+  z-index: 22;
+  height: 74px;
+  gap: clamp(14px, 1.9vw, 30px);
+  padding: 0 clamp(16px, 2vw, 34px);
+  background: #0b1c29ed;
+  border-bottom: 1px solid #365465;
+  box-shadow: inset 0 -1px #f5ffff05;
+}
+
+raide-app .wordmark {
+  font-size: 1.35rem;
+  font-weight: 740;
+  letter-spacing: 0.17em;
+  color: #f3fbff;
+}
+
+raide-app .wordmark span {
+  font-size: 0.75rem;
+  font-weight: 540;
+  letter-spacing: 0.1em;
+  color: #9dbacd;
+}
+
+raide-app .search-box {
+  position: relative;
+  z-index: 3;
+  flex: 1 1 240px;
+  width: min(35vw, 510px);
+  max-width: 510px;
+  height: 44px;
+  margin-left: auto;
+  border: 1px solid #406274;
+  border-radius: 9px;
+  background: #091824;
+  color: #9acbd1;
+  box-shadow: inset 0 1px #f4ffff08;
+}
+
+raide-app .search-box:focus-within {
+  border-color: #9ee5d8;
+  box-shadow: 0 0 0 3px #78e7d224;
+}
+
+raide-app .search-box input {
+  font-size: 0.925rem;
+}
+
+raide-app .search-box input::placeholder {
+  color: #9fb8c9;
+}
+
+raide-app .search-box kbd {
+  color: #bbcfdb;
+  font-size: 0.77rem;
+  padding: 4px 6px;
+  border-color: #425b6c;
+}
+
+raide-app .network-search-results {
+  position: absolute;
+  top: calc(100% + 7px);
+  left: 0;
+  right: 0;
+  max-height: min(65vh, 530px);
+  overflow-y: auto;
+  border: 1px solid #577f8b;
+  border-radius: 11px;
+  background: #102533;
+  color: #ecf6fb;
+  box-shadow: 0 22px 55px #020910dd, 0 0 0 1px #a8e6e011;
+  padding: 8px;
+}
+
+raide-app .search-section-title {
+  padding: 9px 11px 5px;
+  color: #99bdcc;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+raide-app .network-search-result {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 55px;
+  padding: 9px 11px;
+  gap: 12px;
+  text-align: left;
+  border-radius: 7px;
+  color: #effaff;
+}
+
+raide-app .network-search-result:hover,
+raide-app .network-search-result:focus-visible {
+  background: #20485b;
+}
+
+raide-app .search-result-symbol {
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  color: #a4f1df;
+  background: #1e4a4a;
+  border: 1px solid #3b8379;
+  border-radius: 7px;
+}
+
+raide-app .network-search-result > span:last-child {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+
+raide-app .network-search-result strong {
+  font-size: 0.92rem;
+  font-weight: 650;
+  line-height: 1.25;
+}
+
+raide-app .network-search-result small {
+  font-size: 0.83rem;
+  color: #aec6d5;
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+raide-app .search-empty {
+  margin: 0;
+  padding: 17px 12px;
+  color: #b8cddb;
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+raide-app .source-pill {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  min-width: 124px;
+  padding: 6px 12px;
+  gap: 9px;
+  background: #123c33;
+  border: 1px solid #458771;
+  color: #cdf9e4;
+  border-radius: 8px;
+}
+
+raide-app .source-pill > i {
+  width: 8px;
+  height: 8px;
+  flex: 0 0 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+raide-app .source-pill > span {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  white-space: nowrap;
+}
+
+raide-app .source-pill strong {
+  font-size: 0.84rem;
+  font-weight: 740;
+  letter-spacing: 0.025em;
+}
+
+raide-app .source-pill time {
+  color: #bcddcc;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.82rem;
+  line-height: 1;
+}
+
+raide-app .source-pill:is(.recorded, .limited) {
+  color: #f8cf93;
+  border-color: #886847;
+  background: #413120;
+}
+
+raide-app .source-pill:is(.recorded, .limited) time {
+  color: #ecd6b8;
+}
+
+raide-app .source-pill.stale {
+  color: #ffb6a4;
+  border-color: #985b58;
+  background: #4a2529;
+}
+
+raide-app .source-pill.stale time {
+  color: #ffcbbe;
+}
+
+raide-app .topbar-status raide-data-status {
+  display: none;
+}
+
+raide-app .header-clock {
+  font-size: 1rem;
+  font-weight: 540;
+}
+
+raide-app .header-clock span {
+  color: #a9c1d1;
+  font-size: 0.7rem;
+}
+
+/* Page titles are context, not oversized introductory cards. */
+raide-app main {
+  max-width: 2200px;
+  padding: 20px clamp(16px, 1.8vw, 32px) 0;
+}
+
+raide-app .page-heading {
+  min-height: 76px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+raide-app .page-heading h1 {
+  font-size: clamp(1.54rem, 1.65vw, 2rem);
+  font-weight: 690;
+  line-height: 1.22;
+  letter-spacing: -0.025em;
+}
+
+raide-app .page-heading h1 + p {
+  font-size: 0.94rem;
+  color: #b3ccda;
+  margin-top: 6px;
+  max-width: 900px;
+  line-height: 1.45;
+}
+
+raide-app .page-heading .breadcrumb {
+  font-size: 0.8rem;
+  color: #96b4c8;
+  font-weight: 620;
+  letter-spacing: 0.07em;
+  margin-bottom: 7px;
+}
+
+raide-app .heading-actions {
+  margin-top: 0;
+  gap: 8px;
+}
+
+raide-app .heading-actions .button {
+  min-height: 42px;
+  border: 1px solid #48697b;
+  background: #142c3b;
+  color: #e5f4f9;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+raide-app .heading-actions .button:hover {
+  background: #1d4254;
+  border-color: #79a5ad;
+}
+
+raide-app .heading-actions .focus-toggle {
+  border-color: #5a9b94;
+  background: #173b43;
+  color: #d2fff5;
+}
+
+raide-app .heading-actions .focus-toggle[aria-pressed='true'] {
+  background: #265a57;
+  border-color: #9bebdc;
+}
+
+raide-app .button:focus-visible {
+  outline-offset: 2px;
+}
+
+raide-app .warning-banner {
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+raide-app .degraded-source {
+  border-color: #957344;
+  background: #46371d;
+  color: #ffe3b4;
+}
+
+raide-app .degraded-source strong {
+  font-weight: 720;
+}
+
+/* Operational labels get readable minimums while axes/footnotes remain secondary. */
+raide-app :is(.traffic-view-switch button, .chart-modes button, .segmented button, .filter-row label, .train-list th, .train-list td, .chart-options select, .replay-strip button, .ops-context-cta, .notice-meta) {
+  font-size: max(0.875rem, 14px);
+}
+
+raide-app :is(.chart-footer, .visual-footnote, .map-legend, .live-source, .replay-time, .ops-list-heading span) {
+  font-size: 0.875rem;
+}
+
+raide-app .app-footer {
+  font-size: 0.8rem;
+  color: #94aebf;
+}
+
+/* Inner workspaces: one visual language for route, timetable and investigation. */
+raide-app :is(.ops-workspace-heading, .investigation-banner) {
+  border: 1px solid #466878;
+  border-radius: 11px;
+  background:
+    radial-gradient(ellipse at 88% 0%, #2b716b33, transparent 45%),
+    linear-gradient(130deg, #153242, #102433 68%);
+  box-shadow: inset 0 1px #d9f9ff0b;
+}
+
+raide-app :is(.ops-workspace-heading h2, .investigation-banner h2) {
+  font-size: clamp(1.26rem, 1.6vw, 1.68rem);
+  font-weight: 670;
+  letter-spacing: -0.025em;
+  color: #f3fbfd;
+}
+
+raide-app :is(.ops-workspace-heading p, .investigation-banner p) {
+  font-size: 0.94rem;
+  line-height: 1.5;
+  color: #bcd3df;
+}
+
+raide-app :is(.ops-workspace-heading .eyebrow, .investigation-banner .eyebrow, .investigation-source strong) {
+  font-size: 0.875rem;
+  color: #a4eadd;
+  font-weight: 680;
+}
+
+raide-app .investigation-source {
+  min-width: 0;
+}
+
+raide-app .investigation-source small {
+  font-size: 0.875rem;
+  color: #b0c8d6;
+}
+
+raide-app :is(.ops-radar-context, .ops-journey-list, .train-progress-shell, .investigation-grid .panel, .analysis-kpi, .advanced-visual) {
+  border-color: #3f6273;
+  border-radius: 10px;
+  background-color: #102533;
+}
+
+raide-app .analysis-kpi {
+  min-height: 106px;
+  padding: 17px 19px;
+  background: linear-gradient(160deg, #193344, #122734);
+}
+
+raide-app .analysis-kpi.emphasis {
+  border-color: #997145;
+  background: linear-gradient(155deg, #453323, #252a2c);
+}
+
+raide-app :is(.analysis-kpi > span, .analysis-kpi small, .analysis-panel-intro, .queue-train small, .queue-delay small, .queue-order, .queue-more) {
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+raide-app :is(.queue-train strong, .heat-inspector-trains button strong) {
+  font-size: 0.96rem;
+  font-weight: 650;
+}
+
+raide-app .queue-item {
+  min-height: 70px;
+  padding: 11px;
+  border-bottom-color: #304e60;
+}
+
+raide-app .queue-item.chosen {
+  border-left-color: #8ee9cb;
+  background: #204a4a;
+}
+
+raide-app .queue-item:hover:not(.chosen) {
+  background: #1c3b4b;
+}
+
+raide-app .chart-modes button {
+  min-height: 42px;
+  font-size: 0.875rem;
+  font-weight: 620;
+}
+
+raide-app .chart-modes button.active {
+  color: #e1fff3;
+  background: #23534e;
+  border-color: #76bfa8;
+  box-shadow: inset 0 0 0 1px #61b39d;
+}
+
+raide-app :is(.chart-settings label, .chart-settings select, .chart-preferences button, .chart-reset, .chart-scope-note, .visual-intro p, .visual-legend, .visual-footnote) {
+  font-size: 0.875rem;
+  line-height: 1.45;
+}
+
+raide-app .visual-intro strong {
+  color: #f0fafc;
+  font-size: 1.08rem;
+  font-weight: 680;
+}
+
+raide-app .heatmap-grid {
+  background: #102636;
+}
+
+raide-app :is(.heat-corner, .heat-time, .heat-station) {
+  font-size: 0.875rem;
+  font-weight: 580;
+  color: #d2e2ec;
+}
+
+raide-app .heat-cell strong {
+  font-size: 1rem;
+  font-variant-numeric: tabular-nums;
+}
+
+raide-app .heat-cell.selected {
+  border-color: #9cf0d6;
+  box-shadow: 0 0 0 2px #154d46, inset 0 0 0 1px #a8fff01b;
+}
+
+raide-app .heat-inspector {
+  background: #153241;
+  border-color: #4d7783;
+}
+
+raide-app :is(.progress-eyebrow, .progress-point-label, .progress-journey-point small, .progress-source-pill, .progress-completion-meta, .progress-completion-meta small, .progress-confirmed-label, .progress-tabs button, .progress-track-header span, .progress-track-stop strong, .progress-track-stop time, .progress-track-stop small, .progress-source) {
+  font-size: 0.875rem;
+  line-height: 1.35;
+}
+
+raide-app .progress-hero {
+  background:
+    radial-gradient(ellipse at 80% 0%, #3178793d, transparent 57%),
+    linear-gradient(135deg, #173548, #112838);
+  border-bottom-color: #436778;
+}
+
+raide-app .progress-journey-point {
+  border-color: #426879;
+  border-radius: 9px;
+  background: #153747;
+}
+
+raide-app .progress-tabs button {
+  min-height: 42px;
+  font-weight: 630;
+}
+
+raide-app .progress-tabs button.active {
+  border-color: #73bca7;
+  color: #d6ffea;
+  background: #25544e;
+}
+
+/* Focus mode uses the entire available viewport without hiding data provenance. */
+raide-app .app-shell.is-focus-mode,
+raide-app .app-shell:fullscreen {
+  min-height: 100dvh;
+  background: #081824;
+}
+
+raide-app .app-shell.is-focus-mode .side-rail {
+  display: none !important;
+}
+
+raide-app .app-shell.is-focus-mode .main-shell {
+  margin-left: 0;
+}
+
+raide-app .app-shell.is-focus-mode .topbar {
+  height: 58px;
+  padding-inline: 18px;
+}
+
+raide-app .app-shell.is-focus-mode .wordmark {
+  font-size: 1.08rem;
+}
+
+raide-app .app-shell.is-focus-mode .wordmark span {
+  display: none;
+}
+
+raide-app .app-shell.is-focus-mode .topbar-status {
+  display: none;
+}
+
+raide-app .app-shell.is-focus-mode main {
+  max-width: none;
+  padding: 11px 18px 15px;
+  min-height: calc(100dvh - 58px);
+}
+
+raide-app .app-shell.is-focus-mode .page-heading {
+  min-height: 39px;
+  margin-bottom: 9px;
+  gap: 14px;
+}
+
+raide-app .app-shell.is-focus-mode .page-heading h1 {
+  font-size: 1.16rem;
+  font-weight: 670;
+}
+
+raide-app .app-shell.is-focus-mode :is(.page-heading .breadcrumb, .page-heading p, .app-footer) {
+  display: none !important;
+}
+
+raide-app .app-shell.is-focus-mode .heading-actions .button {
+  min-height: 35px;
+  padding-inline: 11px;
+}
+
+raide-app .app-shell.is-focus-mode .replay-strip {
+  margin-bottom: 10px;
+  min-height: 42px;
+  padding-block: 6px;
+}
+
+raide-app .app-shell.is-focus-mode raide-living-network .living-network-head {
+  display: none;
+}
+
+raide-app .app-shell.is-focus-mode raide-living-network .living-network-stage {
+  height: clamp(290px, calc(100dvh - 330px), 680px);
+  min-height: 290px;
+}
+
+raide-app .app-shell.is-focus-mode raide-living-network .living-network-timeline {
+  min-height: 60px;
+  padding: 8px 14px;
+}
+
+raide-app .app-shell.is-focus-mode raide-living-network .living-network-legend {
+  padding: 8px 14px;
+}
+
+raide-app .app-shell.is-focus-mode raide-living-network .living-network-inspector {
+  max-height: calc(100dvh - 192px);
+}
+
+raide-app .app-shell.is-focus-mode .chart-wrap {
+  max-height: calc(100dvh - 300px);
+}
+
+raide-app .app-shell.is-focus-mode .traffic-explorer {
+  min-height: min(760px, calc(100dvh - 285px));
+}
+
+raide-app .app-shell.is-focus-mode .ops-journey-primary,
+raide-app .app-shell.is-focus-mode .ops-journey-list {
+  height: max(520px, calc(100dvh - 255px));
+  min-height: 520px;
+}
+
+@media (max-width: 1450px) {
+  raide-app .topbar { gap: 14px; }
+  raide-app .wordmark span { display: none; }
+  raide-app .source-pill { min-width: 116px; }
+  raide-app .search-box { max-width: 460px; }
+}
+
+@media (max-width: 1020px) {
+  raide-app .topbar { gap: 12px; }
+  raide-app .topbar-status { display: none; }
+  raide-app .search-box { flex-basis: 185px; }
+  raide-app .page-heading { align-items: flex-start; }
+}
+
+@media (max-width: 720px) {
+  raide-app :is(.ops-workspace-heading, .investigation-banner) {
+    padding: 17px;
+    gap: 12px;
+  }
+  raide-app .analysis-kpi {
+    min-height: 95px;
+    padding: 12px 13px;
+  }
+  raide-app .analysis-kpi strong { font-size: 1.55rem; }
+  raide-app .chart-modes { flex-wrap: wrap; }
+  raide-app .chart-modes button { padding: 8px 10px; }
+  raide-app .progress-journey-point { padding: 12px; }
+  raide-app .side-rail {
+    width: 100%;
+    border-top-color: #497789;
+  }
+  raide-app .side-rail nav { padding-top: 5px; }
+  raide-app .side-rail nav button {
+    flex-basis: 88px;
+    width: 88px;
+    min-height: 64px;
+    font-size: 0.82rem;
+    border-left-width: 1px;
+    border-bottom-width: 3px;
+  }
+  raide-app .main-shell { margin-left: 0; }
+  raide-app .topbar {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    height: auto;
+    min-height: 107px;
+    padding: 9px 13px;
+    gap: 7px 9px;
+  }
+  raide-app .wordmark {
+    grid-column: 1;
+    font-size: 1.11rem;
+    min-width: 0;
+  }
+  raide-app .source-pill {
+    grid-column: 2;
+    min-height: 36px;
+    padding: 5px 9px;
+    gap: 7px;
+  }
+  raide-app .source-pill strong { font-size: 0.78rem; }
+  raide-app .source-pill time { font-size: 0.77rem; }
+  raide-app .search-box {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    width: 100%;
+    max-width: none;
+    height: 39px;
+    margin: 0;
+    flex-basis: auto;
+  }
+  raide-app .search-box input { font-size: 0.88rem; }
+  raide-app .network-search-results { max-height: min(57vh, 430px); }
+  raide-app main { padding: 16px 13px calc(106px + env(safe-area-inset-bottom)); }
+  raide-app .page-heading { gap: 12px; align-items: flex-start; }
+  raide-app .page-heading h1 { font-size: 1.48rem; }
+  raide-app .page-heading h1 + p { font-size: 0.88rem; }
+  raide-app .heading-actions { align-items: center; }
+  raide-app .heading-actions .button { min-height: 39px; font-size: 0.82rem; padding-inline: 10px; }
+  raide-app .app-shell.is-focus-mode .topbar {
+    grid-template-columns: auto 1fr auto;
+    min-height: 54px;
+    height: auto;
+    padding: 7px 11px;
+  }
+  raide-app .app-shell.is-focus-mode .wordmark { grid-column: 1; font-size: 0.99rem; }
+  raide-app .app-shell.is-focus-mode .search-box { grid-column: 2; grid-row: 1; height: 39px; }
+  raide-app .app-shell.is-focus-mode .source-pill { grid-column: 3; grid-row: 1; }
+  raide-app .app-shell.is-focus-mode main { padding: 8px 10px; }
+  raide-app .app-shell.is-focus-mode .page-heading { flex-wrap: wrap; }
+  raide-app .app-shell.is-focus-mode .page-heading h1 { font-size: 1.05rem; }
+  raide-app .app-shell.is-focus-mode .heading-actions .button { min-height: 35px; }
+  raide-app .app-shell.is-focus-mode raide-living-network .living-network-stage {
+    min-height: 310px;
+    height: clamp(310px, calc(100dvh - 220px), 610px);
+  }
+  raide-app .app-shell.is-focus-mode raide-living-network .living-network-controls { order: 1; }
+  raide-app .app-shell.is-focus-mode raide-living-network .living-network-stage { order: 2; }
+  raide-app .app-shell.is-focus-mode raide-living-network .living-network-timeline { order: 3; }
+  raide-app .app-shell.is-focus-mode raide-living-network .living-network-inspector { order: 4; max-height: none; }
+  raide-app .app-shell.is-focus-mode raide-living-network .living-network-legend { order: 5; }
+}
+
+@media (max-width: 480px) {
+  raide-app .app-shell.is-focus-mode .topbar {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  raide-app .app-shell.is-focus-mode .wordmark { display: none; }
+  raide-app .app-shell.is-focus-mode .search-box { grid-column: 1; }
+  raide-app .app-shell.is-focus-mode .source-pill { grid-column: 2; }
+  raide-app .app-shell.is-focus-mode .source-pill > i { display: none; }
+  raide-app .search-box kbd { display: none; }
+  raide-app .source-pill strong { font-size: 0.76rem; }
+  raide-app .page-heading .breadcrumb { font-size: 0.75rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  raide-app .network-search-results,
+  raide-app .source-pill,
+  raide-app .focus-toggle {
+    animation: none !important;
+    transition: none !important;
+  }
+}
