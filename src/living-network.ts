@@ -905,7 +905,7 @@ export class LivingNetwork extends LitElement {
                   type="range"
                   min=${this.replayStart}
                   max=${this.replayEnd}
-                  step="1000"
+                  step="any"
                   aria-label="Reittiverkon tallenteen aika"
                   .value=${String(Math.min(this.replayEnd, Math.max(this.replayStart, this.now)))}
                   @input=${(e: Event) => this.seek(Number((e.target as HTMLInputElement).value))}

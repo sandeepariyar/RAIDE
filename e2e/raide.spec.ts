@@ -251,7 +251,7 @@ test('mobiilin keskeiset näkymät pysyvät vaakasuunnassa sivun sisällä', asy
   await page.setViewportSize({ width: 390, height: 844 });
   await recordedApplication(page);
   for (const label of ['Muutostutka', 'Junan eteneminen', 'Aikataulut']) {
-    await page.getByRole('button', { name: label }).click();
+    await page.getByRole('button', { name: label, exact: true }).click();
     const dimensions = await page.evaluate(() => ({
       content: document.documentElement.scrollWidth,
       viewport: document.documentElement.clientWidth,
@@ -321,7 +321,7 @@ test('pienen näytön lähdetieto pysyy näkyvissä eri tietonäkymissä', async
   await page.setViewportSize({ width: 390, height: 844 });
   await recordedApplication(page);
   for (const label of ['Elävä reittiverkko', 'Aikataulut', 'Junan eteneminen']) {
-    await page.getByRole('button', { name: label }).click();
+    await page.getByRole('button', { name: label, exact: true }).click();
     await expect(page.locator('.source-pill')).toBeVisible();
     const extent = await page.evaluate(() => ({
       content: document.documentElement.scrollWidth,
