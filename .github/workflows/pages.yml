@@ -37,6 +37,7 @@ jobs:
         run: npm run test:e2e
         env:
           CI: 'true'
+          RAIDE_BASE_PATH: /RAIDE/
       - name: Tallenna testitulokset virhetilanteessa
         if: failure()
         uses: actions/upload-artifact@v4

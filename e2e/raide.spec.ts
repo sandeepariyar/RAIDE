@@ -3,7 +3,8 @@ import { test, expect, type Page } from '@playwright/test';
 async function recordedApplication(page: Page) {
   // Keep the replay deterministic and independent of live API availability.
   await page.route('https://rata.digitraffic.fi/**', (route) => route.abort());
-  await page.goto('/');
+  // Preserve the /RAIDE/ base path of production builds in GitHub Actions.
+  await page.goto('./');
   await expect(page.getByRole('button', { name: 'Tallenne' })).toBeVisible();
   await expect(page.locator('raide-train-table .train-select').first()).toBeVisible();
   await page.getByRole('button', { name: 'Tallenne' }).click();
