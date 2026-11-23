@@ -5,9 +5,9 @@ async function recordedApplication(page: Page) {
   await page.route('https://rata.digitraffic.fi/**', (route) => route.abort());
   // Preserve the /RAIDE/ base path of production builds in GitHub Actions.
   await page.goto('./');
-  await expect(page.getByRole('button', { name: 'Tallenne' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Tallenne', exact: true })).toBeVisible();
   await expect(page.locator('raide-train-table .train-select').first()).toBeVisible();
-  await page.getByRole('button', { name: 'Tallenne' }).click();
+  await page.getByRole('button', { name: 'Tallenne', exact: true }).click();
 }
 
 test('ensiesittelyn tallennemuutos avaa havaintohistorian loppuun asti', async ({ page }) => {

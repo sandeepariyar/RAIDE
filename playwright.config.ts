@@ -8,6 +8,7 @@ const appUrl = `http://127.0.0.1:4173${basePath}`;
 export default defineConfig({
   testDir: './e2e',
   workers: process.env.CI ? 2 : undefined,
+  maxFailures: process.env.CI ? 2 : undefined,
   timeout: 30_000,
   expect: { timeout: 10_000 },
   use: {
