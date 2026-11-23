@@ -12,8 +12,8 @@ export const corridors: Record<string, { name: string; stations: string[]; quali
     },
     north: {
       name: 'Oulu–Rovaniemi–Kemijärvi',
-      stations: ['OL', 'KEM', 'TUV', 'ROI', 'MIS', 'KJÄ'],
-      qualifiers: ['KEM', 'TUV', 'ROI', 'MIS', 'KJÄ'],
+      stations: ['OL', 'KEM', 'TRV', 'ROI', 'MIS', 'KJÄ'],
+      qualifiers: ['KEM', 'TRV', 'ROI', 'MIS', 'KJÄ'],
     },
     east: {
       name: 'Helsinki–Kouvola–Joensuu',

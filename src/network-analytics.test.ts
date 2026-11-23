@@ -50,6 +50,20 @@ const service = train(23, [
 ]);
 
 describe('rataosakohtaiset visualisoinnit', () => {
+  it('uses Tervola rather than Teuva in the Oulu–Rovaniemi corridor', () => {
+    expect(corridors.north.stations).toEqual(['OL', 'KEM', 'TRV', 'ROI', 'MIS', 'KJÄ']);
+    expect(corridors.north.stations).not.toContain('TUV');
+
+    const viaTervola = train(26, [
+      row('OL', '2026-11-22T10:00:00Z', 'DEPARTURE'),
+      row('TRV', '2026-11-22T11:10:00Z'),
+      row('ROI', '2026-11-22T12:00:00Z'),
+    ]);
+    expect(
+      trainsOnCorridor([viaTervola], corridors.north.stations, corridors.north.qualifiers),
+    ).toEqual([viaTervola]);
+    expect(bestCorridorForTrain(viaTervola)?.id).toBe('north');
+  });
   it('includes a train once when its published route covers at least two unique stations', () => {
     expect(trainsOnCorridor([service], ['HKI', 'TPE', 'OL'])).toEqual([service]);
     expect(trainsOnCorridor([service], ['HKI', 'PSL'])).toEqual([]);

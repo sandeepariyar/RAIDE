@@ -1,5 +1,31 @@
 # Tarkastukset
 
+## Versio 1.8 — rataosan korjaus ja design system -handoff
+
+- **144/144 Vitest-testiä läpäisty.** Uusi testi lukitsee pohjoisen käytävän reitin
+  Oulu–Kemi–Tervola–Rovaniemi–Misi–Kemijärvi ja estää Teuva-tunnuksen palautumisen.
+- **TypeScript strict, Viten tuotantorakennus ja Storybook-rakennus läpäisty.**
+- Elävän reittiverkon taustarunkoa ei enää maalata ilman aineistossa olevaa suoraa
+  aikatauluyhteyttä; valinta toiselta rataosalta näytetään selkokielisenä huomautuksena,
+  ja käyttäjän manuaalista rataosavalintaa kunnioitetaan.
+- Muutostutkalle on yhden painikkeen **tallenne-esittely**, joka erottuu reaaliaikaisesta
+  havainnosta. Esittely ei lisää keksittyä tapahtumaa lähdehistoriaan.
+- [Figma-tiedostoon](https://www.figma.com/design/2iKCBR5lj1vpUUEPOmoDDt) luotiin
+  14 primitiivi- ja 14 semanttista värimuuttujaa, viisi välimittaa, säde sekä kuusi
+  muokattavaa komponenttiperhettä (22 varianttia). [Handoff](design/FIGMA_HANDOFF.md)
+  erittelee mitä puuttuu. Figma Starter -tilin käyttöraja esti esimerkkinäyttöjen
+  lisäämisen; Code Connect edellyttäisi sopivaa tiliä ja julkaistua kirjastoa.
+- **23 Playwright-selaintestiä määritelty** ja lisätty GitHub Actionsin julkaisuporttiin.
+  Edellistä 21 testin sarjaa yritettiin paikallisesti 23.11.2026; kaksi uutta
+  selaintestiä lisättiin tämän jälkeen. Järjestelmän Chromium kaatui jo ennen
+  sivun avaamista `socket() failed: Operation not permitted (1)` -oikeusrajoitukseen.
+  Tämä **ei ole läpäissyt paikallista selaintestausta**. GitHub Actionsin tulos
+  on tarkistettava erikseen; lisäksi tarvitaan saavutettavuus- ja käyttäjätestit.
+- Julkaisu on edelleen itsenäinen **portfolio-/analyysityökalu, ei
+  operatiivisen liikenteenohjauksen hyväksytty käyttöliittymä**.
+
+Tarkastettu 23.11.2026.
+
 ## Versio 1.7 — tietojen oikeellisuus ja työtilan uudistus
 
 - **143/143 Vitest-testiä läpäisty.** Uudet regressiot kattavat puuttuvia aiempia havaintoja, väärään asemaan palaavan seuraava-/nykytila-arvion, oletetun reittiyhteyden ohittavat pikajunat, kaaviosta putoavan junamäärän, tuntemattoman viiveen ja osittaisen live-aikataulun. Mukana on viisi aidon tallenteen IC 63/65/67/68/70 -junien jatkuvuustestiä.

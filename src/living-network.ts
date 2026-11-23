@@ -1,7 +1,7 @@
 import { LitElement, html, nothing, svg } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { corridors } from './corridors';
-import { bestCorridorForTrain, schematicApproaches } from './network-analytics';
+import { bestCorridorForTrain, schematicApproaches, trainsOnCorridor } from './network-analytics';
 import { buildTrainProgress } from './train-progress-model';
 import { buildLivingNetwork } from './living-network-model';
 import { icon } from './icons';
@@ -123,7 +123,7 @@ export class LivingNetwork extends LitElement {
       this.showAllOnEdge = false;
       const train = this.trains.find((item) => key(item) === this.selected);
       const best = train && bestCorridorForTrain(train);
-      if (best && best.id !== this.corridorId) {
+      if (this.followSelected && best && best.id !== this.corridorId) {
         this.corridorId = best.id;
         this.focusedEdge = '';
         this.focusedStation = '';
@@ -367,10 +367,21 @@ export class LivingNetwork extends LitElement {
 
   private changeCorridor(value: string) {
     if (!(value in corridors)) return;
+    // A deliberate corridor choice must not be undone by the previously selected train.
+    this.followSelected = false;
     this.corridorId = value;
     this.focusedEdge = '';
     this.focusedStation = '';
     this.lens = 'all';
+  }
+
+  private followSelectedTrain() {
+    const train = this.trains.find((item) => key(item) === this.selected);
+    if (!train) return;
+    const best = bestCorridorForTrain(train);
+    if (best && best.id !== this.corridorId) this.changeCorridor(best.id);
+    // updated() centers the selected service after the corridor has rendered.
+    this.followSelected = true;
   }
 
   private seek(timestamp: number) {
@@ -385,6 +396,11 @@ export class LivingNetwork extends LitElement {
     const corridor = corridors[this.corridorId];
     const graph = this.graph();
     const selectedTrain = this.trains.find((train) => key(train) === this.selected);
+    const selectedOnCorridor = selectedTrain
+      ? trainsOnCorridor([selectedTrain], corridor.stations, corridor.qualifiers).length > 0
+      : false;
+    const selectedCorridor =
+      selectedTrain && !selectedOnCorridor ? bestCorridorForTrain(selectedTrain) : undefined;
     const progress = selectedTrain
       ? buildTrainProgress(selectedTrain, this.locations, this.now)
       : undefined;
@@ -434,6 +450,12 @@ export class LivingNetwork extends LitElement {
       )
       .sort((a, b) => Number(a.selected) - Number(b.selected))
       .slice(0, 140);
+    // The backdrop is a timetable-evidence layer, never a claim of physical rail topology.
+    const evidencedLinks = new Set(
+      graph.edges
+        .filter((edge) => !edge.isGap && edge.total > 0)
+        .map((edge) => [edge.from, edge.to].sort().join('|')),
+    );
     const edgeFocus = graph.edges.find((edge) => edge.id === this.focusedEdge);
     const focusedStation = this.focusedStation;
     const focusOrder = graph.nodes
@@ -506,7 +528,9 @@ export class LivingNetwork extends LitElement {
           : sourceState === 'limited'
             ? 'RAJATTU REAALIAIKAINEN AINEISTO'
             : 'REAALIAIKAINEN AINEISTO';
-    const selectedServiceName = selectedTrain ? label(selectedTrain) : 'Ei junavalintaa';
+    const selectedServiceName = selectedTrain
+      ? `${label(selectedTrain)}${selectedOnCorridor ? '' : ' · toisella rataosalla'}`
+      : 'Ei junavalintaa';
     const gpsAge = progress?.gpsAgeMinutes;
 
     const buckets = this.timelineBuckets(corridorSet);
@@ -550,7 +574,7 @@ export class LivingNetwork extends LitElement {
               html`<button
                 aria-pressed=${this.lens === id}
                 class=${this.lens === id ? 'active' : ''}
-                ?disabled=${id === 'selected' && !selectedTrain}
+                ?disabled=${id === 'selected' && !selectedOnCorridor}
                 @click=${() => (this.lens = id)}
               >
                 ${text}
@@ -589,8 +613,8 @@ export class LivingNetwork extends LitElement {
             ?disabled=${!selectedTrain}
             title="Keskitä ja seuraa valittua junaa"
             @click=${() => {
-              this.followSelected = !this.followSelected;
-              if (this.followSelected) this.centerSelected();
+              if (this.followSelected) this.followSelected = false;
+              else this.followSelectedTrain();
             }}
           >
             ${icon('target', 16)} Seuraa valittua
@@ -636,8 +660,10 @@ export class LivingNetwork extends LitElement {
           <rect width=${width} height=${height} fill="url(#living-dots)" />
           <text x="55" y="45" class="minor">AIKATAULUIHIN PERUSTUVA REITTIKUVA · EI OPASTIN- TAI RAIDEVARAUSTIETOA</text>
           ${corridorCodes.slice(0, -1).map((fromCode, index) => {
+            const toCode = corridorCodes[index + 1];
+            if (!evidencedLinks.has([fromCode, toCode].sort().join('|'))) return nothing;
             const a = positions.get(fromCode)!;
-            const b = positions.get(corridorCodes[index + 1])!;
+            const b = positions.get(toCode)!;
             return svg`<path d=${routePath(a, b)} fill="none" stroke="#416073" stroke-width="10" opacity=".28" stroke-linecap="round" />
               <path d=${routePath(a, b)} fill="none" stroke="#68869a" stroke-width="2" stroke-dasharray="6 9" opacity=".55" />`;
           })}
@@ -728,6 +754,24 @@ export class LivingNetwork extends LitElement {
 
       <aside class="living-network-inspector" aria-label="Reittiverkon tarkennus">
         <span class="eyebrow">VALITUN KOHTEEN TARKASTELU</span>
+        ${
+          selectedTrain && !selectedOnCorridor && !edgeFocus && !focusedStation
+            ? html`<div class="living-network-corridor-notice" role="status">
+                <strong>${label(selectedTrain)} ei kuulu tähän rataosaan.</strong>
+                <span
+                  >Valittu juna säilyy muissa näkymissä. Verkon juna- ja yhteysluvut koskevat vain
+                  nykyistä rataosaa.</span
+                >
+                ${
+                  selectedCorridor && selectedCorridor.id !== this.corridorId
+                    ? html`<button @click=${() => this.followSelectedTrain()}>
+                        Näytä rataosalla ${selectedCorridor.corridor.name}
+                      </button>`
+                    : nothing
+                }
+              </div>`
+            : nothing
+        }
         <h3>
           ${edgeFocus ? `${this.stations.get(edgeFocus.from)?.stationName ?? edgeFocus.from} – ${this.stations.get(edgeFocus.to)?.stationName ?? edgeFocus.to}` : focusedStation ? (this.stations.get(focusedStation)?.stationName ?? focusedStation) : selectedServiceName}
         </h3>

@@ -9,6 +9,36 @@ async function recordedApplication(page: Page) {
   await page.getByRole('button', { name: 'Tallenne' }).click();
 }
 
+test('ensiesittelyn tallennemuutos avaa havaintohistorian loppuun asti', async ({ page }) => {
+  await recordedApplication(page);
+  await page.getByRole('button', { name: /Katso tallenteen esimerkkimuutokset/ }).click();
+  await expect(page.getByRole('heading', { name: /Havaitse muutos/ })).toBeVisible();
+  await expect(page.locator('raide-change-radar')).toBeVisible();
+  await expect(page.locator('.replay-strip')).toHaveClass(/is-recorded/);
+  const replay = page.getByRole('slider', { name: 'Tallenteen toistokohta' });
+  await expect(replay).toHaveValue((await replay.getAttribute('max')) ?? '');
+});
+
+test('pohjoisen rataosavalinta ei sisällä Teuvaa eikä piirrä tuettomia runkoyhteyksiä', async ({
+  page,
+}) => {
+  await recordedApplication(page);
+  await page.getByRole('button', { name: 'Elävä reittiverkko' }).click();
+  const network = page.locator('raide-living-network');
+  await network
+    .getByRole('combobox', { name: 'Valitse reittiverkon rataosa' })
+    .selectOption('north');
+  await expect(network.getByRole('combobox', { name: 'Valitse reittiverkon rataosa' })).toHaveValue(
+    'north',
+  );
+  await expect(network.locator('[data-station="TUV"]')).toHaveCount(0);
+  const counts = await network.locator('.living-network-svg').evaluate((svg) => ({
+    backgroundPaths: svg.querySelectorAll('path[stroke="#416073"]').length,
+    realConnections: svg.querySelectorAll('.living-network-edge:not(.is-gap)').length,
+  }));
+  expect(counts.backgroundPaths).toBeLessThanOrEqual(counts.realConnections);
+});
+
 test('havaitun viiveen valinta avaa saman junan tilanneanalyysiin', async ({ page }) => {
   const errors: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));

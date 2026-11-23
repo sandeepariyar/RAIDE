@@ -480,6 +480,27 @@ raide-living-network .living-network-inspector h4 {
   color: #eaf9fc;
 }
 
+raide-living-network .living-network-corridor-notice {
+  display: grid;
+  gap: 8px;
+  margin: 10px 0 16px;
+  padding: 13px;
+  border: 1px solid #a98450;
+  border-radius: 10px;
+  background: #392c23;
+  color: #ffe2b9;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+raide-living-network .living-network-corridor-notice span {
+  color: #e6caa6;
+}
+
+raide-living-network .living-network-corridor-notice button {
+  justify-self: start;
+}
+
 raide-living-network .living-network-inspector .eyebrow,
 raide-living-network .living-network-inspector small {
   color: #91dbc8;

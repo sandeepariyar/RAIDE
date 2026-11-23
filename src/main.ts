@@ -279,8 +279,11 @@ class RaideApp extends LitElement {
   }
   private networkSearchResults() {
     const query = this.query.trim().toLocaleLowerCase('fi');
-    if (!query || this.page !== 'network') return { stationMatches: [] as Station[], trainMatches: [] as Train[] };
-    const diagramStations = new Set(Object.values(corridors).flatMap((corridor) => corridor.stations));
+    if (!query || this.page !== 'network')
+      return { stationMatches: [] as Station[], trainMatches: [] as Train[] };
+    const diagramStations = new Set(
+      Object.values(corridors).flatMap((corridor) => corridor.stations),
+    );
     const stationMatches = this.stations
       .filter(
         (station) =>
@@ -318,7 +321,8 @@ class RaideApp extends LitElement {
       const { stationMatches, trainMatches } = this.networkSearchResults();
       const exactStation = stationMatches.find(
         (station) =>
-          station.stationShortCode.toLocaleLowerCase('fi') === this.query.trim().toLocaleLowerCase('fi') ||
+          station.stationShortCode.toLocaleLowerCase('fi') ===
+            this.query.trim().toLocaleLowerCase('fi') ||
           station.stationName.toLocaleLowerCase('fi') === this.query.trim().toLocaleLowerCase('fi'),
       );
       if (exactStation) this.chooseNetworkSearchStation(exactStation);
@@ -545,6 +549,16 @@ class RaideApp extends LitElement {
     this.applyFrame(i, false);
     this.now = target;
   }
+  /** A deterministic, clearly labelled replay path for first-time reviewers. */
+  private showRecordedChanges() {
+    const frames = this.recording?.frames;
+    if (!frames?.length) return;
+    this.setMode('recorded');
+    const duration =
+      (Date.parse(frames.at(-1)!.capturedAt) - Date.parse(frames[0].capturedAt)) / 1000;
+    this.seek(Math.max(0, duration));
+    this.navigate('radar');
+  }
   private notify(text: string) {
     this.toast = text;
     setTimeout(() => {
@@ -753,6 +767,20 @@ class RaideApp extends LitElement {
           >
           ${icon('chevron', 17)}
         </button>
+        <button
+          class="ops-quick-action"
+          @click=${() => this.showRecordedChanges()}
+          ?disabled=${!this.recording?.frames.length}
+        >
+          <span class="ops-quick-symbol accent">${icon('play', 21)}</span>
+          <span
+            ><strong>Katso tallenteen esimerkkimuutokset</strong>
+            <small
+              >Yksi klikkaus · tallennettu havaintohistoria, ei reaaliaikainen tilanne</small
+            ></span
+          >
+          ${icon('chevron', 17)}
+        </button>
         <button class="ops-quick-action" @click=${() => this.navigate('timetable')}>
           <span class="ops-quick-symbol blue">${icon('chart', 21)}</span>
           <span
@@ -885,6 +913,7 @@ class RaideApp extends LitElement {
   }
   private renderRadar() {
     const selectedTrain = this.trains.find((train) => key(train) === this.selected);
+    const observations = this.observationsForMode();
     return html`<div class="ops-workspace">
       <div class="ops-workspace-heading">
         <div>
@@ -899,9 +928,25 @@ class RaideApp extends LitElement {
           Avaa tilanneanalyysi ${icon('chevron', 14)}
         </button>
       </div>
+      ${
+        observations.length < 2 && this.recording?.frames.length
+          ? html`<div class="ops-radar-demo-note" role="status">
+              <div>
+                <strong>Havaintohistoria on vasta alussa.</strong>
+                <p>
+                  Reaaliaikaiset muutokset näkyvät vasta, kun uusia havaintoja kertyy. Voit myös
+                  kokeilla analyysiä merkityllä tallenteella.
+                </p>
+              </div>
+              <button class="button" @click=${() => this.showRecordedChanges()}>
+                Näytä tallenteen muutokset ${icon('play', 15)}
+              </button>
+            </div>`
+          : nothing
+      }
       <div class="ops-radar-layout">
         <raide-change-radar
-          .observations=${this.observationsForMode()}
+          .observations=${observations}
           .trains=${this.trains}
           .stations=${this.map}
           .selected=${this.selected}
@@ -1098,6 +1143,16 @@ class RaideApp extends LitElement {
                 <p class="lead">
                   Samat Web Components -komponentit toimivat sekä tilannekuvassa että tämän
                   kirjaston esimerkeissä. Esimerkit ovat vuorovaikutteisia.
+                </p>
+                <p>
+                  <a
+                    href="https://www.figma.com/design/2iKCBR5lj1vpUUEPOmoDDt"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >Avaa RAIDE Design System Figmassa ${icon('external', 14)}</a
+                  >
+                  · Muuttujat ja kuusi muokattavaa varianttiperhettä. Kaikki näkymät eivät vielä
+                  sisälly Figma-kirjastoon.
                 </p>
                 <div class="docs-tiles">
                   <button @click=${() => (this.doc = 'delay')}>
@@ -1356,9 +1411,23 @@ class RaideApp extends LitElement {
                             </ul>
                             <h3>Lähdekoodi ja testaus</h3>
                             <p>
-                              <a href=${`${(import.meta as any).env?.BASE_URL || '/'}komponentit/index.html`} target="_blank" rel="noopener"
+                              <a
+                                href=${`${(import.meta as any).env?.BASE_URL || '/'}komponentit/index.html`}
+                                target="_blank"
+                                rel="noopener"
                                 >Avaa Storybook-kehittäjänäkymä ${icon('external', 14)}</a
                               >
+                            </p>
+                            <p>
+                              <a
+                                href="https://www.figma.com/design/2iKCBR5lj1vpUUEPOmoDDt"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                >Avaa muokattava Figma-komponenttikirjasto
+                                ${icon('external', 14)}</a
+                              >. Figma-värimuuttujat seuraavat
+                              <code>design/tokens.json</code>-nimiä; toteutuksen ydin on Lit Web
+                              Components. Automaattinen Code Connect -julkaisu ei ole käytössä.
                             </p>
                             <p>
                               Komponentit, tietopalvelu, tietomalli ja testit on erotettu omiin
@@ -1567,7 +1636,11 @@ class RaideApp extends LitElement {
       limited: 'RAJATTU AINEISTO',
     }[sourceState];
     return html`<a class="skip-link" href="#main">Siirry sisältöön</a>
-      <div class=${`app-shell ${this.focusMode ? 'is-focus-mode' : ''}`} data-focus-mode=${this.focusMode} data-fullscreen=${this.browserFullscreen}>
+      <div
+        class=${`app-shell ${this.focusMode ? 'is-focus-mode' : ''}`}
+        data-focus-mode=${this.focusMode}
+        data-fullscreen=${this.browserFullscreen}
+      >
         <aside class="side-rail">
           <a
             href="#"
@@ -1623,34 +1696,78 @@ class RaideApp extends LitElement {
                   }
                 }}
               /><kbd>Ctrl K</kbd>
-              ${showNetworkResults
-                ? html`<div id="network-search-results" class="network-search-results" role="region" aria-label="Haun tulokset">
-                    ${networkSearch.stationMatches.length
-                      ? html`<div class="search-section-title">Liikennepaikat</div>
-                          ${networkSearch.stationMatches.map(
-                            (station) => html`<button class="network-search-result" @click=${() => this.chooseNetworkSearchStation(station)}>
-                              <span class="search-result-symbol">${icon('pin', 15)}</span>
-                              <span><strong>${station.stationName}</strong><small>${station.stationShortCode} · Avaa reittiverkossa</small></span>
-                            </button>`,
-                          )}`
-                      : nothing}
-                    ${networkSearch.trainMatches.length
-                      ? html`<div class="search-section-title">Junat</div>
-                          ${networkSearch.trainMatches.map(
-                            (train) => html`<button class="network-search-result" @click=${() => this.chooseNetworkSearchTrain(train)}>
-                              <span class="search-result-symbol">${icon('train', 15)}</span>
-                              <span><strong>${label(train)}</strong><small>${this.map.get(endpoints(train)[0])?.stationName ?? endpoints(train)[0]} – ${this.map.get(endpoints(train)[1])?.stationName ?? endpoints(train)[1]}</small></span>
-                            </button>`,
-                          )}`
-                      : nothing}
-                    ${!networkSearch.trainMatches.length && !networkSearch.stationMatches.length
-                      ? html`<p class="search-empty">Ei tuloksia ladatusta aineistosta. Tarkista hakusana tai valitse toinen aikajakso.</p>`
-                      : nothing}
-                  </div>`
-                : nothing}
+              ${
+                showNetworkResults
+                  ? html`<div
+                      id="network-search-results"
+                      class="network-search-results"
+                      role="region"
+                      aria-label="Haun tulokset"
+                    >
+                      ${
+                        networkSearch.stationMatches.length
+                          ? html`<div class="search-section-title">Liikennepaikat</div>
+                              ${networkSearch.stationMatches.map(
+                                (station) =>
+                                  html`<button
+                                    class="network-search-result"
+                                    @click=${() => this.chooseNetworkSearchStation(station)}
+                                  >
+                                    <span class="search-result-symbol">${icon('pin', 15)}</span>
+                                    <span
+                                      ><strong>${station.stationName}</strong
+                                      ><small
+                                        >${station.stationShortCode} · Avaa reittiverkossa</small
+                                      ></span
+                                    >
+                                  </button>`,
+                              )}`
+                          : nothing
+                      }
+                      ${
+                        networkSearch.trainMatches.length
+                          ? html`<div class="search-section-title">Junat</div>
+                              ${networkSearch.trainMatches.map(
+                                (train) =>
+                                  html`<button
+                                    class="network-search-result"
+                                    @click=${() => this.chooseNetworkSearchTrain(train)}
+                                  >
+                                    <span class="search-result-symbol">${icon('train', 15)}</span>
+                                    <span
+                                      ><strong>${label(train)}</strong
+                                      ><small
+                                        >${this.map.get(endpoints(train)[0])?.stationName ?? endpoints(train)[0]}
+                                        –
+                                        ${this.map.get(endpoints(train)[1])?.stationName ?? endpoints(train)[1]}</small
+                                      ></span
+                                    >
+                                  </button>`,
+                              )}`
+                          : nothing
+                      }
+                      ${
+                        !networkSearch.trainMatches.length && !networkSearch.stationMatches.length
+                          ? html`<p class="search-empty">
+                              Ei tuloksia ladatusta aineistosta. Tarkista hakusana tai valitse
+                              toinen aikajakso.
+                            </p>`
+                          : nothing
+                      }
+                    </div>`
+                  : nothing
+              }
             </div>
-            <div class=${`source-pill ${sourceState}`} role="status" aria-label=${`${sourceLabel}. ${this.updatedAt ? `Viimeisin vastaanotto ${time(this.updatedAt)}` : 'Aineiston vastaanottoaika puuttuu'}`}>
-              <i aria-hidden="true"></i><span><strong>${sourceLabel}</strong><time>${this.updatedAt ? time(this.updatedAt) : '–'}</time></span>
+            <div
+              class=${`source-pill ${sourceState}`}
+              role="status"
+              aria-label=${`${sourceLabel}. ${this.updatedAt ? `Viimeisin vastaanotto ${time(this.updatedAt)}` : 'Aineiston vastaanottoaika puuttuu'}`}
+            >
+              <i aria-hidden="true"></i
+              ><span
+                ><strong>${sourceLabel}</strong
+                ><time>${this.updatedAt ? time(this.updatedAt) : '–'}</time></span
+              >
             </div>
             <div class="topbar-status">
               <raide-data-status
@@ -1685,16 +1802,20 @@ class RaideApp extends LitElement {
                 </p>
               </div>
               <div class="heading-actions">
-                ${expandedPages.has(this.page)
-                  ? html`<button
-                      class="button focus-toggle"
-                      data-testid="focus-toggle"
-                      aria-pressed=${this.focusMode}
-                      aria-label=${this.focusMode ? 'Sulje koko näytön työtila' : 'Avaa koko näytön työtila'}
-                      @click=${() => this.toggleFocusMode()}
-                    >${icon(this.focusMode ? 'minimize' : 'maximize', 16)}
-                      <span>${this.focusMode ? 'Palauta näkymä' : 'Koko näyttö'}</span></button>`
-                  : nothing}
+                ${
+                  expandedPages.has(this.page)
+                    ? html`<button
+                        class="button focus-toggle"
+                        data-testid="focus-toggle"
+                        aria-pressed=${this.focusMode}
+                        aria-label=${this.focusMode ? 'Sulje koko näytön työtila' : 'Avaa koko näytön työtila'}
+                        @click=${() => this.toggleFocusMode()}
+                      >
+                        ${icon(this.focusMode ? 'minimize' : 'maximize', 16)}
+                        <span>${this.focusMode ? 'Palauta näkymä' : 'Koko näyttö'}</span>
+                      </button>`
+                    : nothing
+                }
                 ${
                   this.page === 'overview'
                     ? html`<select
@@ -1742,9 +1863,9 @@ class RaideApp extends LitElement {
               this.mode === 'live' && !this.dailyTrainsAvailable
                 ? html`<div class="warning-banner degraded-source" role="status">
                     ${icon('alert', 16)}<span
-                      ><strong>Rajoitettu aikatauluaineisto.</strong> Päivän koko aikatauluaineistoa ei saatu.
-                      Näkymä käyttää viime aikoina aktiivisten junien tietoja; osa junista voi
-                      puuttua. Aikataulujen kattavuutta ei ole vahvistettu.</span
+                      ><strong>Rajoitettu aikatauluaineisto.</strong> Päivän koko aikatauluaineistoa
+                      ei saatu. Näkymä käyttää viime aikoina aktiivisten junien tietoja; osa junista
+                      voi puuttua. Aikataulujen kattavuutta ei ole vahvistettu.</span
                     ><button @click=${() => this.refresh(true)}>Yritä uudelleen</button>
                   </div>`
                 : nothing
@@ -1810,7 +1931,10 @@ class RaideApp extends LitElement {
                   rel="noopener"
                   >CC BY 4.0</a
                 ><span class="footer-separator">·</span>Itsenäinen portfolio-prototyyppi</span
-              ><span class="footer-owner">© 2026 <strong>SANDEEP PARIYAR</strong><span class="footer-separator">·</span>KAIKKI OIKEUDET PIDÄTETÄÄN</span>
+              ><span class="footer-owner"
+                >© 2026 <strong>SANDEEP PARIYAR</strong
+                ><span class="footer-separator">·</span>KAIKKI OIKEUDET PIDÄTETÄÄN</span
+              >
             </footer>
           </main>
         </div>

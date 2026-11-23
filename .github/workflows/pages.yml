@@ -27,10 +27,25 @@ jobs:
         run: npm ci
       - name: Suorita yksikkötestit
         run: npm test
+      - name: Asenna Playwright-selain
+        run: npx playwright install --with-deps chromium
       - name: Rakenna sovellus ja komponenttikirjasto
         run: npm run build
         env:
           RAIDE_BASE_PATH: /RAIDE/
+      - name: Suorita selaimen hyväksyntätestit
+        run: npm run test:e2e
+        env:
+          CI: 'true'
+      - name: Tallenna testitulokset virhetilanteessa
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: raide-playwright-report
+          path: |
+            playwright-report/
+            test-results/
+          if-no-files-found: ignore
       - name: Pakkaa verkkosivusto
         uses: actions/upload-pages-artifact@v4
         with:

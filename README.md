@@ -33,6 +33,8 @@
 
 Suomenkielinen, valtakunnallinen junaliikenteen verkkosovellus ja uudelleenkäytettävä Web Components -komponenttikirjasto. Suunnittelu ja toteutus: **Sandeep Pariyar**.
 
+**Versio 1.8 — tarkennettu reittiverkko ja design-to-code:** pohjoisen rataosan virheellinen Teuva-solmu on korjattu Tervolaksi, ja kaavion runkoyhteys piirretään vain aikatauluhavainnon perusteella. Rataosan manuaalinen valinta ei enää sekoitu muissa näkymissä säilyvään junavalintaan. Yhden painikkeen tallenne-esittely avaa Muutostutkan koko tallennetun havaintohistorian loppupisteessä. [Figma-design system](https://www.figma.com/design/2iKCBR5lj1vpUUEPOmoDDt) sisältää koodista takaisinmallinnetut väri- ja mitoitusmuuttujat sekä kuusi muokattavaa varianttiperhettä. [Design-to-code- ja rajoitekuvaus](design/FIGMA_HANDOFF.md) erottaa valmiin ja vielä keskeneräisen työn. Playwright on lisätty CI-julkaisuportiksi.
+
 **Versio 1.7 — käyttöliittymän ja tietojen luotettavuuden uudistus:** tärkeimmät analyysi-, reitti-, junan etenemis- ja aikataulutyötilat voi laajentaa koko näytölle. Hakutulos paikantaa junan tai liikennepaikan reittiverkossa; verkko on sovitettavissa ruudulle ja seuraa valittua junaa. Reittipisteitä ohittava junamatka säilyy näkyvissä erikseen merkittynä selvittämättömänä aikataulujaksona. Toteuma, ennuste, peruutus, epävarmuus ja suunnittaiset junamäärät erotellaan. Seuraavan ja nykyisen liikennepaikan päätelmät, puutteellinen junamäärä ja tuntemattomat viiveet on korjattu. Osittainen reaaliaikainen junadata merkitään näkyvästi. Tämä on julkisten aikataulu- ja havaintotietojen analyysityökalu, **ei opastin-, raidevaraus- tai liikenteenohjausjärjestelmä**. [Tarkastusten rajat](VERIFICATION.md) kertoo myös, mitkä selaintarkistukset ovat vielä tekemättä.
 
 **Versio 1.6 — elävä reittiverkko:** uusi Rail Route -tyylinen, muuttuva **Elävä reittiverkko** -työtila, jonka julkaistujen aikataulupisteiden kaavio päivittyy aika-, ennuste- ja toteumatietojen mukana. Se sisältää rataosavalinnan, liittyvät yhteydet, junatunnukset, aikaikkunan, tietotasot, lähennys-/loitonnustoiminnot ja oman tallenteen aikavalitsimen. Lisäksi reaaliaikaiseen junaluetteloon yhdistetään `/live-trains`-aineisto, jotta edellisen päivän vuoroja ei riippuvaisesti kadoteta puuttuvan GPS:n vuoksi. Edellisen version **Muutostutka**, **Junan eteneminen**, kuusi graafisen aikataulun esitystapaa ja koko uudistettu ulkoasu säilyvät. [Lähdetiedon hyväksymisportit](LIVE_SCHEMATIC_ACCEPTANCE.md) kuvaavat esityksen rajat. [Kansainvälinen rautatietutkimus](KANSAINVALINEN_RAUTATIEVERTAILU.md) vertailee Japanin, Ison-Britannian, Yhdysvaltain, Australian, Saksan, Alankomaiden ja Ranskan käytäntöjä.
@@ -46,6 +48,8 @@ Itsenäinen portfolio-projekti. Sovellus ei ole Fintrafficin palvelu eikä liike
 - **[RAIDE — GitHub Pages](https://sandeepariyar.github.io/RAIDE/)** · julkinen, selaimessa toimiva sovellus.
 - [Alkuperäinen portfoliojulkaisu](https://raide-railway-intelligence-2026.sandeep-pariyar.chatgpt.site) · vaihtoehtoinen verkko-osoite.
 - [GitHub Actions](https://github.com/sandeepariyar/RAIDE/actions) · testaus, tuotantorakennus ja julkaisu `main`-haaran päivityksistä.
+- [Figma: RAIDE Design System](https://www.figma.com/design/2iKCBR5lj1vpUUEPOmoDDt) · muokattavat muuttujat ja varianttiperheet (jakamisoikeus tarkistettava ennen arvioijan kutsumista).
+- [Design-to-code-handoff ja jäljellä olevat portit](design/FIGMA_HANDOFF.md) · komponenttikartta, suunnitteluperiaatteet ja lyhyt demo-polku.
 
 GitHub Pages -rakennus käyttää `/RAIDE/`-polkua. Reaaliaikainen tila hakee tiedot Digitrafficin avoimesta rajapinnasta; tallennetila käyttää mukana julkaistuja havaintoja ja toimii ilman reaaliaikaista yhteyttä.
 
@@ -72,12 +76,14 @@ npm run test:e2e
 ```
 
 Testit käyttävät mukaan pakattua tallennetta ja eristävät reaaliaikaisen rajapinnan, jotta tulokset eivät riipu sen saatavuudesta. Selainten asennus on tarpeen vain näiden testien suorittamiseksi, ei valmiin sovelluksen avaamiseksi.
+GitHub Actions ajaa selaintestit jokaisessa `main`-haaran julkaisussa. Paikallinen tietoturva- tai konttiympäristö voi estää Chromiumin käynnistyksen kokonaan, jolloin testi ei ole läpäisty eikä epäonnistumista pidä sekoittaa sovelluksen regressioon.
 
 Tuotantoversio syntyy `dist/`-hakemistoon. Storybook julkaistaan sen alihakemistossa `komponentit/`. Varsinaisen sovelluksen komponenttiohjeet ovat kokonaan suomeksi; Storybook on erillinen kehittäjätyökalu.
 
 ## Toiminnot
 
 - **Kahdeksan tehtäväkeskeistä päätyötilaa:** Tilannekuva, Elävä reittiverkko, Muutostutka, Junan eteneminen, Tilanneanalyysi, Aikataulut, Tiedotteet ja Komponenttikirjasto. Koko sovelluksen junavalinta ja tallenne-/reaaliaikatila seuraavat mukana.
+- **Opastettu tallenne-esimerkki:** Tilannekuvan toiminto siirtää Muutostutkan merkityn tallenteen viimeisimpään havaintoon. Se näyttää havaintohistorian ilman, että käyttäjä odottaa uuden live-havainnon syntymistä.
 - **Elävä reittiverkko:** julkisiin aikataulutietoihin perustuva dynaaminen asemien/yhteyksien kaavio, jossa valittava rataosa, sivuliittymät ja tietotasot (yhteydet, ennusteet, valittu juna), 30/60/120 minuutin näkymä, havaittujen toteumien erillinen väri, klikkattavat junan seuraavan aikataulupisteen tunnukset, useiden junien ryhmittely, reittipisteen/yhteyden tarkennus, lähennys ja siirryttävä tallenteen aika. **Tämä ei ole fyysisen raideverkoston piirustus, eikä oikea asetinlaite-, vaihde-, opastin-, kulkutie- tai raidevaraustila.**
 - **Muutostutka:** 5/15/60 minuutin havaintoikkunat, tyypeittäin väritetyt aikaosuudet, valittava havaintotyyppi ja junarajaus, napsautettavat havaintotapahtumat ja yhteys valitun junan tarkempiin tietoihin. Aikapalkkien ja tapahtumaluettelon rajaus on yhteinen. Muutokset on havaittu peräkkäisistä otoksista — tarkkaa syntyhetkeä ei väitetä tunnetuksi.
 - **Junan eteneminen:** alkuasema → viimeksi vahvistettu asematapahtuma → seuraava aikataulupiste → määränpää, erillinen GPS-havaintojen paikkaesitystapa ja pysähdyskohtainen tarkastelu. Saapuminen ilman vahvistettua lähtöä on oma tilansa. Aikataulu, ennuste, toteuma ja puuttuva GPS erotellaan.
